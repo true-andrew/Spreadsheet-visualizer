@@ -1,7 +1,6 @@
 import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
 import {
-  ControlOptionArray,
   ControlOptionInput,
   ControlOptionSelect,
   ControlOptionTextarea
@@ -9,20 +8,20 @@ import {
 import {DatePicker} from "./DatePicker.js";
 
 export class Field extends EventEmitter {
-  constructor(field) {
+  constructor(mountPoint, field) {
     super();
     this.type = field.type;
     this.value = field.value;
-    this.createFieldContainer();
-    super.on('editField', this);
+    mountPoint.append(this.createFieldContainer());
+    this.on('editField', this);
   }
 
   container = undefined;
 
-  handleEvent(e, data) {
+  handleEvent(e, field) {
     if (e.type === 'contextmenu') {
       e.preventDefault();
-      super.emit('callContextMenu', {
+      this.emit('callContextMenu', {
         position: {
           x: e.clientX,
           y: e.clientY,
@@ -30,7 +29,7 @@ export class Field extends EventEmitter {
         field: this,
       });
     } else if (e === 'editField') {
-      if (data === this) {
+      if (field === this) {
         this.edit();
       }
     } else {
@@ -43,18 +42,12 @@ export class Field extends EventEmitter {
     td.title = this.type;
     td.addEventListener('contextmenu', this);
     this.container = td;
+    return td;
   }
 
   edit() {
     this.container.textContent = '';
-    let controlOption;
-    if (this.type === 'date') {
-      this.container.classList.add('date-picker');
-      controlOption = new DatePicker(this.container);
-    } else {
-      controlOption = createControl(this);
-      this.container.append(controlOption.container);
-    }
+    const editingField = createEditField(this);
   }
 
   saveChanges(newValue) {
@@ -68,12 +61,12 @@ const options = {
   'color': ControlOptionInput,
   'range': ControlOptionInput,
   'select': ControlOptionSelect,
-  'array': ControlOptionArray,
   'text': ControlOptionInput,
   'textarea': ControlOptionTextarea,
+  'date': DatePicker,
 }
 
-function createControl(controlOption) {
+function createEditField(controlOption) {
   const targetClass = options[controlOption.type];
   return new targetClass(controlOption);
 }
