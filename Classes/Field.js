@@ -1,9 +1,9 @@
 import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
 import {
-  ControlOptionInput,
-  ControlOptionSelect,
-  ControlOptionTextarea
+  FieldEditText,
+  FieldEditSelect,
+  FieldEditorTextarea
 } from "./ControlOptions.js";
 import {DatePicker} from "./DatePicker.js";
 
@@ -41,12 +41,14 @@ export class Field extends EventEmitter {
     const td = createDOMElement('td', this.value);
     td.title = this.type;
     td.addEventListener('contextmenu', this);
-    this.container = td;
+    this.container = createDOMElement('div');
+    this.container.append(td);
     return td;
   }
 
   edit() {
-    this.container.textContent = '';
+    this.container.replaceChildren();
+    debugger
     const editingField = createEditField(this);
   }
 
@@ -57,16 +59,16 @@ export class Field extends EventEmitter {
 }
 
 const options = {
-  'number': ControlOptionInput,
-  'color': ControlOptionInput,
-  'range': ControlOptionInput,
-  'select': ControlOptionSelect,
-  'text': ControlOptionInput,
-  'textarea': ControlOptionTextarea,
+  'number': FieldEditText,
+  'color': FieldEditText,
+  'range': FieldEditText,
+  'select': FieldEditSelect,
+  'text': FieldEditText,
+  'textarea': FieldEditorTextarea,
   'date': DatePicker,
 }
 
-function createEditField(controlOption) {
-  const targetClass = options[controlOption.type];
-  return new targetClass(controlOption);
+function createEditField(field) {
+  const targetClass = options[field.type];
+  return new targetClass(field.container, field);
 }

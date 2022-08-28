@@ -2,7 +2,7 @@ import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
 
 
-export class ControlOption extends EventEmitter {
+export class FieldEdit extends EventEmitter {
   container = undefined;
 
   constructor(controlOption) {
@@ -30,15 +30,15 @@ export class ControlOption extends EventEmitter {
   }
 }
 
-export class ControlOptionInput extends ControlOption {
-  constructor(parentElement, controlOption) {
+export class FieldEditText extends FieldEdit {
+  constructor(mountPoint, controlOption) {
     super(controlOption);
     if (controlOption.max !== undefined && controlOption.min !== undefined) {
       this.min = controlOption.min;
       this.max = controlOption.max;
     }
     this.container = this.createControlOptionInput(controlOption.title, this.type, this.value);
-    parentElement.append(this.container);
+    mountPoint.append(this.container);
   }
 
   createControlOptionInput(title, type, value) {
@@ -65,12 +65,12 @@ export class ControlOptionInput extends ControlOption {
   }
 }
 
-export class ControlOptionSelect extends ControlOption {
-  constructor(parentElement, controlOption) {
+export class FieldEditSelect extends FieldEdit {
+  constructor(mountPoint, controlOption) {
     super(controlOption);
     this.options = controlOption.options;
     this.container = this.createControlOptionSelect(controlOption.title);
-    parentElement.append(this.container);
+    mountPoint.append(this.container);
   }
 
   createControlOptionSelect(title) {
@@ -96,11 +96,11 @@ export class ControlOptionSelect extends ControlOption {
   }
 }
 
-export class ControlOptionTextarea extends ControlOption {
+export class FieldEditorTextarea extends FieldEdit {
   constructor(parentElement, controlOption) {
     super(controlOption);
     this.container = this.createControlOptionTextarea(controlOption.title);
-    parentElement.append(this.container);
+    parentElement.append(this.container)
   }
 
   createControlOptionTextarea(title) {
