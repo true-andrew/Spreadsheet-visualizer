@@ -1,7 +1,7 @@
-import {EventEmitter} from "./Classes/EventEmitter.js";
-import {ContextMenu} from "./Classes/ContextMenu.js";
-import {Field} from "./Classes/Field.js";
-import {createDOMElement} from "./helper.js";
+import {EventEmitter} from "./EventEmitter.js";
+import {ContextMenu} from "./ContextMenu.js";
+import {Field} from "./Field.js";
+import {createDOMElement} from "../helper.js";
 
 export class TableWrapper extends EventEmitter {
   container = undefined;
@@ -28,15 +28,16 @@ export class TableWrapper extends EventEmitter {
     this.container = createDOMElement('table', '', 'table');
   }
 
-  show() {
-    this.container.style.display = '';
-  }
-
-  hide() {
-    this.container.style.display = 'none';
-  }
+  // show() {
+  //   this.container.style.display = '';
+  // }
+  //
+  // hide() {
+  //   this.container.style.display = 'none';
+  // }
 
   generateCells(data) {
+    this.container.textContent = '';
     this.contextMenu = new ContextMenu(this.container);
     this.contextMenu.on('callContextMenu', this);
 

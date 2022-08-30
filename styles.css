@@ -74,6 +74,11 @@ textarea {
     outline: none;
 }
 
+.controllers {
+    display: flex;
+    justify-content: space-between;
+}
+
 /**
 DATEPICKER
  */

@@ -1,144 +1,128 @@
 export const data = [
   [
     {
-      type: 'text',
-      value: 'ES1'
+      type: 'number',
+      value: '1'
     },
     {
       type: 'text',
-      value: 'ECMAScript 1',
+      value: 'concat',
     },
     {
       type: 'textarea',
-      value: 'First edition'
-    },
-    {
-      type: 'date',
-      value: 1997
+      value: 'Return new array by joining arrays a1 and a2 together'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES2'
+      type: 'number',
+      value: '2'
     },
     {
       type: 'text',
-      value: 'ECMAScript 2',
+      value: 'join',
     },
     {
       type: 'textarea',
-      value: 'Editorial changes'
-    },
-    {
-      type: 'date',
-      value: 1998
+      value: 'Join all elements of array a1 into a string separated by separator arg'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES3'
+      type: 'number',
+      value: '3'
     },
     {
       type: 'text',
-      value: 'ECMAScript 3',
+      value: 'slice',
     },
     {
       type: 'textarea',
-      value: 'Added regular expressions\n' +
-        'Added try/catch\n' +
-        'Added switch\n' +
-        'Added do-while'
-    },
-    {
-      type: 'date',
-      value: 1999
+      value: 'Extract a section from start to end of array a1 and return a new array'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES5'
+      type: 'number',
+      value: '4'
     },
     {
       type: 'text',
-      value: 'ECMAScript 5',
+      value: 'indexOf',
     },
     {
       type: 'textarea',
-      value: "Added \"strict mode\"\n" +
-        "Added JSON support\n" +
-        "Added String.trim()\n" +
-        "Added Array.isArray()\n" +
-        "Added Array iteration methods\n" +
-        "Allows trailing commas for object literals"
-    },
-    {
-      type: 'date',
-      value: 2009
+      value: 'Return first index of obj within array a1'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES6'
+      type: 'number',
+      value: '5'
     },
     {
       type: 'text',
-      value: 'ECMAScript 2015',
+      value: 'lastIndexOf',
     },
     {
       type: 'textarea',
-      value: "Added let and const\n" +
-        "Added default parameter values\n" +
-        "Added Array.find()\n" +
-        "Added Array.findIndex()"
-    },
-    {
-      type: 'date',
-      value: 2015
+      value: 'Return last index of obj within array a1'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES6'
+      type: 'number',
+      value: '6'
     },
     {
       type: 'text',
-      value: 'ECMAScript 2016',
+      value: 'forEach',
     },
     {
       type: 'textarea',
-      value: "Added exponential operator (**)\n" +
-        "Added Array.includes()"
-    },
-    {
-      type: 'date',
-      value: 2016
+      value: 'Calls function fn for each element in the array a1'
     }
   ],
   [
     {
-      type: 'text',
-      value: 'ES6'
+      type: 'number',
+      value: '7'
     },
     {
       type: 'text',
-      value: 'ECMAScript 2017',
+      value: 'every',
     },
     {
       type: 'textarea',
-      value: "Added string padding\n" +
-        "Added Object.entries()\n" +
-        "Added Object.values()\n" +
-        "Added async functions\n" +
-        "Added shared memory"
-    },
-    {
-      type: 'date',
-      value: 2017
+      value: 'Return true if every element in array a1 satisfies provided testing function fn'
     }
   ],
+  [
+    {
+      type: 'number',
+      value: '8'
+    },
+    {
+      type: 'text',
+      value: 'some',
+    },
+    {
+      type: 'textarea',
+      value: 'Return true if at least one element in array a1 satisfies provided testing function fn'
+    }
+  ],
+  [
+    {
+      type: 'number',
+      value: '9'
+    },
+    {
+      type: 'text',
+      value: 'filter',
+    },
+    {
+      type: 'textarea',
+      value: 'Create a new array with all elements of array a1 which pass the filtering function fn'
+    }
+  ]
 ];

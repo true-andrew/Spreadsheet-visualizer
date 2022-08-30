@@ -8,6 +8,7 @@ export class Sort extends EventEmitter {
   }
 
   container = undefined;
+  static eventName = 'sortTable';
 
   handleEvent(e) {
     if (e.type === 'click') {
@@ -19,6 +20,10 @@ export class Sort extends EventEmitter {
     const sortButton = createDOMElement('button', 'Sort Table');
     sortButton.addEventListener('click', this);
     this.container = sortButton;
+  }
+
+  render(container) {
+    container.append(this.container);
   }
 
 }

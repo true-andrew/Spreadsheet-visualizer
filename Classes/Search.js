@@ -7,9 +7,11 @@ export class Search extends EventEmitter {
     this.initSearchField();
   }
 
+  static eventName = 'searchTable'
+
   handleEvent(e) {
     if (e.type === 'change') {
-      this.emit('search', e.target.value);
+      this.emit('searchTable', e.target.value);
     }
   }
 
@@ -20,5 +22,9 @@ export class Search extends EventEmitter {
     inputElement.addEventListener('change', this);
     container.append(label, inputElement);
     this.container = container;
+  }
+
+  render(container) {
+    container.append(this.container);
   }
 }

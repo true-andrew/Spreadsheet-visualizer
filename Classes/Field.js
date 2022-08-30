@@ -48,7 +48,6 @@ export class Field extends EventEmitter {
 
   edit() {
     this.container.replaceChildren();
-    debugger
     const editingField = createEditField(this);
   }
 
@@ -70,5 +69,6 @@ const options = {
 
 function createEditField(field) {
   const targetClass = options[field.type];
+  debugger
   return new targetClass(field.container, field);
 }

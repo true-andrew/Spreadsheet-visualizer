@@ -100,7 +100,7 @@ export class FieldEditorTextarea extends FieldEdit {
   constructor(parentElement, controlOption) {
     super(controlOption);
     this.container = this.createControlOptionTextarea(controlOption.title);
-    parentElement.append(this.container)
+    parentElement.replaceChildren(this.container);
   }
 
   createControlOptionTextarea(title) {
