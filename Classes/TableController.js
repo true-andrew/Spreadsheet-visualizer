@@ -12,6 +12,19 @@ export class TableController extends EventEmitter {
     this.initTableWrapper(container, data);
   }
 
+  handleEvent(e, data) {
+    if (e === 'searchTable') {
+      this.filterData(data);
+    } else if (e === 'optionChanged') {
+      // this.editingCell.saveChanges(data);
+      // this.editingCell = undefined;
+    } else if (e === 'sortTable') {
+      this.sortData();
+    } else {
+      throw new Error(`Unhandled event: ${e}`);
+    }
+  }
+
   initControllers(controllers) {
     const controllersContainer = createDOMElement('div', undefined, 'controllers');
 
@@ -31,20 +44,8 @@ export class TableController extends EventEmitter {
     this.tableWrapper.render(container, data);
   }
 
-  handleEvent(e, data) {
-    if (e === 'searchTable') {
-      this.filterData(data);
-    } else if (e === 'optionChanged') {
-      // this.editingCell.saveChanges(data);
-      // this.editingCell = undefined;
-    } else if (e === 'sortTable') {
-      this.sortData();
-    } else {
-      throw new Error(`Unhandled event: ${e}`);
-    }
-  }
-
   sortData() {
+    console.log('sort table')
     const sorted = [].concat(this.data);
 
     for (let i = 0, len = sorted.length - 1; i < len; i++) {
@@ -55,6 +56,7 @@ export class TableController extends EventEmitter {
   }
 
   filterData(searchValue) {
+    console.log('search in table')
     if (searchValue === '') {
       this.tableWrapper.generateCells(this.data);
       return;
