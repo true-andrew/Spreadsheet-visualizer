@@ -2,9 +2,9 @@ import {createDOMElement} from "../helper.js";
 import {EventEmitter} from "./EventEmitter.js";
 
 export class ContextMenu extends EventEmitter {
-  constructor() {
+  constructor(container) {
     super();
-    this.initContainer();
+    container.append(this.initContainer());
   }
 
   container = undefined;
@@ -42,7 +42,8 @@ export class ContextMenu extends EventEmitter {
     template.addEventListener('blur', this);
     template.addEventListener('click', this);
     template.addEventListener('contextmenu', this);
-    this.container = template;
+    this.container = template
+    return this.container;
   }
 
   openContextMenu(data) {
