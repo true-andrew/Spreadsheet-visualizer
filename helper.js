@@ -5,7 +5,7 @@ export function createDOMElement(type, textContent, className, dataset) {
     element.textContent = textContent;
   }
 
-  if (className !== '' && className !== undefined) {
+  if (className !== undefined) {
     element.classList.add(className);
   }
 
