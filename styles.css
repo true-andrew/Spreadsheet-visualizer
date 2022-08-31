@@ -34,10 +34,21 @@ textarea {
 }
 
 .table td {
+    box-sizing: border-box;
     padding: 8px;
     border: 1px solid #ddd;
-    white-space: pre-line;
 }
+
+.editing-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.editing-field  input, .editing-field textarea {
+    width: 100%;
+}
+
 
 .table tr:nth-child(even) {
     background-color: #f2f2f2;
