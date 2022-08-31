@@ -46,6 +46,7 @@ export class TableController extends EventEmitter {
 
   saveChanges(data) {
     this.data[data.field.idRow][data.field.idCol].value = data.newValue;
+    this.tableWrapper.generateCells(this.data);
   }
 
   sortData() {
@@ -67,6 +68,7 @@ export class TableController extends EventEmitter {
     }
 
     const filteredData = [];
+
     for (let i = 0, len = this.data.length; i < len; i++) {
       const row = this.data[i];
       for (let j = 0, len = row.length; j < len; j++) {
@@ -78,6 +80,7 @@ export class TableController extends EventEmitter {
         }
       }
     }
+
     this.tableWrapper.generateCells(filteredData);
   }
 }

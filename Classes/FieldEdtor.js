@@ -23,7 +23,7 @@ export class FieldEdit extends EventEmitter {
   }
 
   createEditFieldContainer() {
-    const propContainer = document.createDocumentFragment();
+    const propContainer = createDOMElement('div', undefined, 'editing-field');
     const btnContainer = createDOMElement('div');
     const saveBtn = createDOMElement('button', 'Save', 'button', {action: 'saveChanges'});
     saveBtn.addEventListener('click', this);
@@ -40,11 +40,11 @@ export class FieldEdit extends EventEmitter {
 export class FieldEditText extends FieldEdit {
   constructor(container, fieldValue) {
     super(fieldValue);
-    this.container = this.createControlOptionInput(this.type, this.value);
+    this.container = this.createEditFieldInput(this.type, this.value);
     container.append(this.container);
   }
 
-  createControlOptionInput(type, value) {
+  createEditFieldInput(type, value) {
     const container = this.createEditFieldContainer();
     const inputElement = this.createInputElement(type, value);
     container.prepend(inputElement);
@@ -68,44 +68,14 @@ export class FieldEditText extends FieldEdit {
   }
 }
 
-export class FieldEditSelect extends FieldEdit {
-  constructor(mountPoint, controlOption) {
-    super(controlOption);
-    this.options = controlOption.options;
-    this.container = this.createControlOptionSelect(controlOption.title);
-    mountPoint.append(this.container);
-  }
-
-  createControlOptionSelect() {
-    const container = this.createEditFieldContainer();
-    const selectElement = this.createSelectElement();
-    container.prepend(selectElement);
-    return container;
-  }
-
-  createSelectElement() {
-    const selectElement = createDOMElement('select', '', 'form__field');
-
-    for (let i = 0, len = this.options.length; i < len; i++) {
-      const optionName = this.options[i];
-      const optionEl = createDOMElement('option', optionName);
-      if (optionName === this.value) {
-        optionEl.selected = true;
-      }
-      selectElement.append(optionEl);
-    }
-    return selectElement;
-  }
-}
-
 export class FieldEditorTextarea extends FieldEdit {
   constructor(parentElement, controlOption) {
     super(controlOption);
-    this.container = this.createControlOptionTextarea(controlOption.title);
+    this.container = this.createEditFieldTextarea(controlOption.title);
     parentElement.replaceChildren(this.container);
   }
 
-  createControlOptionTextarea() {
+  createEditFieldTextarea() {
     const container = this.createEditFieldContainer();
     const textarea = createDOMElement('textarea', '', 'form__textarea');
     textarea.value = this.value;

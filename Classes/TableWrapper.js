@@ -1,7 +1,7 @@
 import {EventEmitter} from "./EventEmitter.js";
-import {ContextMenu} from "./ContextMenu.js";
 import {Field} from "./Field.js";
 import {createDOMElement} from "../helper.js";
+import {contextMenu} from "./ContextMenu.js";
 
 export class TableWrapper extends EventEmitter {
   container = undefined;
@@ -14,6 +14,8 @@ export class TableWrapper extends EventEmitter {
   handleEvent(e, data) {
     if (e === 'saveChanges') {
       this.emit('saveChanges', data);
+    } else if (e === 'editField') {
+      data.edit();
     }
   }
 
@@ -22,6 +24,7 @@ export class TableWrapper extends EventEmitter {
   }
 
   generateCells(data) {
+    contextMenu.on('editField', this);
     this.container.textContent = '';
 
     for (let i = 0, len = data.length; i < len; i++) {

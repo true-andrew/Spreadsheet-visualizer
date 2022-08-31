@@ -2,11 +2,10 @@ import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
 import {
   FieldEditText,
-  FieldEditSelect,
   FieldEditorTextarea
 } from "./FieldEdtor.js";
 import {DatePicker} from "./DatePicker.js";
-import {ContextMenu} from "./ContextMenu.js";
+import {contextMenu} from "./ContextMenu.js";
 
 export class Field extends EventEmitter {
   constructor(container, field, idObj) {
@@ -20,18 +19,14 @@ export class Field extends EventEmitter {
   }
 
   container = undefined;
-  contextMenu = null;
+
 
   handleEvent(e, data) {
     if (e.type === 'contextmenu') {
       e.preventDefault();
-      this.contextMenu = new ContextMenu(this.container);
-      this.contextMenu.on('editField', this);
-      this.contextMenu.openContextMenu(e);
-    } else if (e === 'editField') {
-      this.edit();
+      contextMenu.openContextMenuAndSaveField(e, this);
     } else if (e === 'endEdit') {
-      this.saveChanges(data)
+      this.saveChanges(data);
     } else {
       throw new Error(`Field class doesn't have event: ${e}`)
     }
@@ -47,14 +42,12 @@ export class Field extends EventEmitter {
   }
 
   edit() {
-    this.container.replaceChildren();
+    this.container.textContent = '';
     const editingField = createEditField(this);
     editingField.on('endEdit', this);
   }
 
   saveChanges(newValue) {
-    this.container.replaceChildren();
-    this.container.textContent = newValue;
     this.emit('saveChanges', {
       field: this,
       newValue
@@ -66,7 +59,6 @@ const options = {
   'number': FieldEditText,
   'color': FieldEditText,
   'range': FieldEditText,
-  'select': FieldEditSelect,
   'text': FieldEditText,
   'textarea': FieldEditorTextarea,
   'date': DatePicker,
