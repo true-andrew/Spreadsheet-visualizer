@@ -1,11 +1,11 @@
 import {createDOMElement} from "../helper.js";
 import {EventEmitter} from "./EventEmitter.js";
 
-export class ContextMenu extends EventEmitter {
-  constructor(container) {
+class ContextMenu extends EventEmitter {
+  constructor() {
     super();
     this.container = this.initContainer();
-    container.append(this.container);
+    document.body.append(this.container);
   }
 
   handleEvent(e) {
@@ -13,7 +13,6 @@ export class ContextMenu extends EventEmitter {
       this.hide();
     } else if (e.type === 'click') {
       this.handleEditField()
-
     } else if (e.type === 'contextmenu') {
       e.preventDefault();
     }
@@ -21,7 +20,7 @@ export class ContextMenu extends EventEmitter {
 
   handleEditField() {
     this.hide();
-    this.emit('editField', undefined);
+    this.emit('editField', this.field);
   }
 
   show(x, y) {
@@ -46,10 +45,12 @@ export class ContextMenu extends EventEmitter {
     return this.container;
   }
 
-  openContextMenu(e) {
+  openContextMenuAndSaveField(e, field) {
+    this.field = field;
     const x = e.clientX;
     const y = e.clientY;
     this.show(x, y);
   }
-
 }
+
+export const contextMenu = new ContextMenu()
