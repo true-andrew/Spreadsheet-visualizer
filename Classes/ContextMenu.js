@@ -4,22 +4,24 @@ import {EventEmitter} from "./EventEmitter.js";
 export class ContextMenu extends EventEmitter {
   constructor(container) {
     super();
-    container.append(this.initContainer());
+    this.container = this.initContainer();
+    container.append(this.container);
   }
-
-  container = undefined;
-  savedField = undefined;
 
   handleEvent(e) {
     if (e.type === 'blur') {
       this.hide();
     } else if (e.type === 'click') {
-      //handleEditField()
-      this.hide();
-      this.emit('editField', this.savedField);
+      this.handleEditField()
+
     } else if (e.type === 'contextmenu') {
       e.preventDefault();
     }
+  }
+
+  handleEditField() {
+    this.hide();
+    this.emit('editField', undefined);
   }
 
   show(x, y) {
@@ -34,10 +36,8 @@ export class ContextMenu extends EventEmitter {
   }
 
   initContainer() {
-    const template = createDOMElement('div');
+    const template = createDOMElement('div', 'Edit');
     template.id = 'context_menu';
-    const editOption = createDOMElement('div', 'Edit');
-    template.append(editOption);
     template.tabIndex = -1;
     template.addEventListener('blur', this);
     template.addEventListener('click', this);
@@ -46,10 +46,9 @@ export class ContextMenu extends EventEmitter {
     return this.container;
   }
 
-  openContextMenu(data) {
-    const x = data.position.x;
-    const y = data.position.y;
-    this.savedField = data.field;
+  openContextMenu(e) {
+    const x = e.clientX;
+    const y = e.clientY;
     this.show(x, y);
   }
 

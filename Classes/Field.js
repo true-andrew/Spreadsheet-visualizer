@@ -4,34 +4,34 @@ import {
   FieldEditText,
   FieldEditSelect,
   FieldEditorTextarea
-} from "./ControlOptions.js";
+} from "./FieldEdtor.js";
 import {DatePicker} from "./DatePicker.js";
+import {ContextMenu} from "./ContextMenu.js";
 
 export class Field extends EventEmitter {
-  constructor(mountPoint, field) {
+  constructor(container, field, idObj) {
     super();
     this.type = field.type;
     this.value = field.value;
-    mountPoint.append(this.createFieldContainer());
-    this.on('editField', this);
+    this.idRow = idObj.idRow;
+    this.idCol = idObj.idCol;
+    this.container = this.createFieldContainer();
+    container.append(this.container);
   }
 
   container = undefined;
+  contextMenu = null;
 
-  handleEvent(e, field) {
+  handleEvent(e, data) {
     if (e.type === 'contextmenu') {
       e.preventDefault();
-      this.emit('callContextMenu', {
-        position: {
-          x: e.clientX,
-          y: e.clientY,
-        },
-        field: this,
-      });
+      this.contextMenu = new ContextMenu(this.container);
+      this.contextMenu.on('editField', this);
+      this.contextMenu.openContextMenu(e);
     } else if (e === 'editField') {
-      if (field === this) {
-        this.edit();
-      }
+      this.edit();
+    } else if (e === 'endEdit') {
+      this.saveChanges(data)
     } else {
       throw new Error(`Field class doesn't have event: ${e}`)
     }
@@ -49,11 +49,16 @@ export class Field extends EventEmitter {
   edit() {
     this.container.replaceChildren();
     const editingField = createEditField(this);
+    editingField.on('endEdit', this);
   }
 
   saveChanges(newValue) {
     this.container.replaceChildren();
     this.container.textContent = newValue;
+    this.emit('saveChanges', {
+      field: this,
+      newValue
+    });
   }
 }
 
@@ -69,6 +74,5 @@ const options = {
 
 function createEditField(field) {
   const targetClass = options[field.type];
-  debugger
   return new targetClass(field.container, field);
 }

@@ -48,24 +48,20 @@ textarea {
 }
 
 #context_menu {
-    position: fixed;
+    position: absolute;
     z-index: 1000;
     width: 150px;
     background-color: #1b1a1a;
     border-radius: 5px;
     display: none;
-}
-
-#context_menu div {
     color: #eeeeee;
     cursor: pointer;
     font-size: 15px;
     padding: 8px;
-    border-radius: inherit;
     user-select: none;
 }
 
-#context_menu div:hover {
+#context_menu:hover {
     background-color: #343434;
 }
 

@@ -15,9 +15,8 @@ export class TableController extends EventEmitter {
   handleEvent(e, data) {
     if (e === 'searchTable') {
       this.filterData(data);
-    } else if (e === 'optionChanged') {
-      // this.editingCell.saveChanges(data);
-      // this.editingCell = undefined;
+    } else if (e === 'saveChanges') {
+      this.saveChanges(data);
     } else if (e === 'sortTable') {
       this.sortData();
     } else {
@@ -41,7 +40,12 @@ export class TableController extends EventEmitter {
 
   initTableWrapper(container, data) {
     this.tableWrapper = new TableWrapper();
+    this.tableWrapper.on('saveChanges', this);
     this.tableWrapper.render(container, data);
+  }
+
+  saveChanges(data) {
+    this.data[data.field.idRow][data.field.idCol].value = data.newValue;
   }
 
   sortData() {

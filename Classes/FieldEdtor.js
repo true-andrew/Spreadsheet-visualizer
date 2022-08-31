@@ -3,49 +3,53 @@ import {createDOMElement} from "../helper.js";
 
 
 export class FieldEdit extends EventEmitter {
-  container = undefined;
-
   constructor(controlOption) {
     super();
     this.type = controlOption.type;
     this.value = controlOption.value;
-    this.name = controlOption.name;
   }
+
+  container = undefined;
+  inputElement = undefined;
 
   handleEvent(ev) {
-    const optionValue = ev.target.value;
-    this.emit('optionChanged', optionValue);
+    let outputValue;
+    if (ev.target === this.saveBtn) {
+      outputValue = this.inputElement.value;
+    } else if (ev.target === this.discardBtn) {
+      outputValue = this.value;
+    }
+    this.emit('endEdit', outputValue);
   }
 
-  createPropContainerWithTitle(title) {
-    const propContainer = createDOMElement('div', '', 'form__group');
-    const labelElement = createDOMElement('label', title, 'form__label');
-    labelElement.htmlFor = this.name;
-    propContainer.append(labelElement);
+  createEditFieldContainer() {
+    const propContainer = document.createDocumentFragment();
+    const btnContainer = createDOMElement('div');
+    const saveBtn = createDOMElement('button', 'Save', 'button', {action: 'saveChanges'});
+    saveBtn.addEventListener('click', this);
+    this.saveBtn = saveBtn;
+    const discardBtn = createDOMElement('button', 'Discard', 'button', {action: 'discardChanges'});
+    discardBtn.addEventListener('click', this);
+    this.discardBtn = discardBtn;
+    btnContainer.append(saveBtn, discardBtn);
+    propContainer.append(btnContainer);
     return propContainer;
-  }
-
-  initEventListener(element) {
-    element.addEventListener('change', this);
   }
 }
 
 export class FieldEditText extends FieldEdit {
-  constructor(mountPoint, controlOption) {
-    super(controlOption);
-    if (controlOption.max !== undefined && controlOption.min !== undefined) {
-      this.min = controlOption.min;
-      this.max = controlOption.max;
-    }
-    this.container = this.createControlOptionInput(controlOption.title, this.type, this.value);
-    mountPoint.append(this.container);
+  constructor(container, fieldValue) {
+    super(fieldValue);
+    this.container = this.createControlOptionInput(this.type, this.value);
+    container.append(this.container);
   }
 
-  createControlOptionInput(title, type, value) {
-    const controlElement = super.createPropContainerWithTitle(title);
+  createControlOptionInput(type, value) {
+    const container = this.createEditFieldContainer();
     const inputElement = this.createInputElement(type, value);
-    controlElement.prepend(inputElement);
-    return controlElement;
+    container.prepend(inputElement);
+    this.inputElement = inputElement;
+    return container;
   }
 
   createInputElement(type, value) {
@@ -60,7 +64,6 @@ export class FieldEditText extends FieldEdit {
     inputElement.required = true;
     inputElement.type = type;
     inputElement.value = value;
-    super.initEventListener(inputElement);
     return inputElement;
   }
 }
@@ -73,11 +76,11 @@ export class FieldEditSelect extends FieldEdit {
     mountPoint.append(this.container);
   }
 
-  createControlOptionSelect(title) {
-    const createdContainer = super.createPropContainerWithTitle(title);
+  createControlOptionSelect() {
+    const container = this.createEditFieldContainer();
     const selectElement = this.createSelectElement();
-    createdContainer.prepend(selectElement);
-    return createdContainer;
+    container.prepend(selectElement);
+    return container;
   }
 
   createSelectElement() {
@@ -91,7 +94,6 @@ export class FieldEditSelect extends FieldEdit {
       }
       selectElement.append(optionEl);
     }
-    super.initEventListener(selectElement);
     return selectElement;
   }
 }
@@ -103,13 +105,11 @@ export class FieldEditorTextarea extends FieldEdit {
     parentElement.replaceChildren(this.container);
   }
 
-  createControlOptionTextarea(title) {
-    const container = super.createPropContainerWithTitle(title);
-    const label = container.firstChild;
-    label.classList.add('form__label-textarea');
+  createControlOptionTextarea() {
+    const container = this.createEditFieldContainer();
     const textarea = createDOMElement('textarea', '', 'form__textarea');
     textarea.value = this.value;
-    super.initEventListener(textarea);
+    this.inputElement = textarea;
     container.prepend(textarea);
     return container;
   }

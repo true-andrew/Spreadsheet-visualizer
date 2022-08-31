@@ -5,22 +5,15 @@ import {createDOMElement} from "../helper.js";
 
 export class TableWrapper extends EventEmitter {
   container = undefined;
-  isEditing = false;
 
   constructor() {
     super();
     this.initContainer();
-    this.on('editField', this);
   }
 
   handleEvent(e, data) {
-    if (e === 'callContextMenu') {
-      if (this.isEditing) {
-        return;
-      }
-      this.contextMenu.openContextMenu(data);
-    } else if (e === 'editField') {
-      this.isEditing = true;
+    if (e === 'saveChanges') {
+      this.emit('saveChanges', data);
     }
   }
 
@@ -28,27 +21,16 @@ export class TableWrapper extends EventEmitter {
     this.container = createDOMElement('table', '', 'table');
   }
 
-  // show() {
-  //   this.container.style.display = '';
-  // }
-  //
-  // hide() {
-  //   this.container.style.display = 'none';
-  // }
-
   generateCells(data) {
     this.container.textContent = '';
-    this.contextMenu = new ContextMenu(this.container);
-    this.contextMenu.on('callContextMenu', this);
 
     for (let i = 0, len = data.length; i < len; i++) {
       const row = createDOMElement('tr');
       const fields = data[i];
       for (let j = 0, len = fields.length; j < len; j++) {
         const dataObject = fields[j];
-        const field = new Field(row, dataObject);
-        field.idRow = i;
-        field.idCol = j;
+        const field = new Field(row, dataObject, {idRow: i, idCol: j});
+        field.on('saveChanges', this);
       }
       this.container.append(row);
     }
