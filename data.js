@@ -1,8 +1,8 @@
-export const data = [
+const data = [
   [
     {
       type: 'number',
-      value: '1'
+      value: 1
     },
     {
       type: 'text',
@@ -16,7 +16,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '2'
+      value: 2
     },
     {
       type: 'text',
@@ -30,7 +30,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '3'
+      value: 3
     },
     {
       type: 'text',
@@ -44,7 +44,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '4'
+      value: 4
     },
     {
       type: 'text',
@@ -58,7 +58,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '5'
+      value: 5
     },
     {
       type: 'text',
@@ -72,7 +72,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '6'
+      value: 6
     },
     {
       type: 'text',
@@ -86,7 +86,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '7'
+      value: 7
     },
     {
       type: 'text',
@@ -100,7 +100,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '8'
+      value: 8
     },
     {
       type: 'text',
@@ -114,7 +114,7 @@ export const data = [
   [
     {
       type: 'number',
-      value: '9'
+      value: 9
     },
     {
       type: 'text',
@@ -126,3 +126,13 @@ export const data = [
     }
   ]
 ];
+
+for (let i = 0, len = data.length; i < len; i++) {
+  const row = data[i];
+  for (let j = 0, len = row.length; j < len; j++) {
+    data[i][j].idRow = i;
+    data[i][j].idCol = j;
+  }
+}
+
+export {data};

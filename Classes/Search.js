@@ -1,10 +1,11 @@
-import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
+import {BaseComponent} from "./BaseComponent.js";
 
-export class Search extends EventEmitter {
-  constructor() {
-    super();
-    this.initSearchField();
+export class Search extends BaseComponent {
+  constructor(mountPoint) {
+    super({
+      mountPoint
+    });
   }
 
   static eventName = 'searchTable'
@@ -15,16 +16,12 @@ export class Search extends EventEmitter {
     }
   }
 
-  initSearchField() {
+  initContainer() {
     const container = createDOMElement('div');
     const label = createDOMElement('label', 'Search Field:');
     const inputElement = createDOMElement('input');
     inputElement.addEventListener('change', this);
     container.append(label, inputElement);
     this.container = container;
-  }
-
-  render(container) {
-    container.append(this.container);
   }
 }

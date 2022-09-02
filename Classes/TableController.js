@@ -1,16 +1,16 @@
-import {TableWrapper} from "./TableWrapper.js";
-import {EventEmitter} from "./EventEmitter.js";
-import {createDOMElement} from "../helper.js";
+import {createDOMElement, insertSort} from "../helper.js";
+import {BaseComponent} from "./BaseComponent.js";
 
-
-export class TableController extends EventEmitter {
-  constructor(container, data, controllers) {
-    super();
-    this.data = data;
-    this.container = container;
+export class TableController extends BaseComponent {
+  constructor(container, parent, controllers) {
+    super({
+      mountPoint: container,
+      parent
+    });
     this.initControllers(controllers);
-    this.initTableWrapper(container, data);
   }
+
+  sortOrder = true;
 
   handleEvent(e, data) {
     if (e === 'searchTable') {
@@ -24,53 +24,47 @@ export class TableController extends EventEmitter {
     }
   }
 
-  initControllers(controllers) {
-    const controllersContainer = createDOMElement('div', undefined, 'controllers');
-
-    for (let i = 0, len = controllers.length; i < len; i++) {
-      const controller = controllers[i]
-      const controllerName = 'tableController_' + controllers[i].name;
-      this[controllerName] = new controller();
-      this[controllerName].render(controllersContainer);
-      this[controllerName].on(controller.eventName, this);
-    }
-
-    this.container.append(controllersContainer);
+  initContainer() {
+    this.container = createDOMElement('div', undefined, 'controllers');
   }
 
-  initTableWrapper(container, data) {
-    this.tableWrapper = new TableWrapper();
-    this.tableWrapper.on('saveChanges', this);
-    this.tableWrapper.render(container, data);
+  initControllers(controllers) {
+    for (let i = 0, len = controllers.length; i < len; i++) {
+      const controller = controllers[i];
+      const controllerName = 'tableController_' + controllers[i].name;
+      this[controllerName] = new controller(this.container);
+      this[controllerName].on(controller.eventName, this);
+    }
   }
 
   saveChanges(data) {
-    this.data[data.field.idRow][data.field.idCol].value = data.newValue;
-    this.tableWrapper.generateCells(this.data);
+    console.log('saving changes');
+    for (let i = 0, len = this.parent.data.length; i < len; i++) {
+      const value = this.parent.data[i][data.idCol];
+      if (value.idRow === data.idRow) {
+        this.parent.data[i][data.idCol].value = data.newValue;
+      }
+    }
   }
 
   sortData() {
-    console.log('sort table')
-    const sorted = [].concat(this.data);
+    this.sortOrder = !this.sortOrder;
+    console.log('sort table');
 
-    for (let i = 0, len = sorted.length - 1; i < len; i++) {
-
-    }
-
-    this.tableWrapper.generateCells(sorted)
+    insertSort(this.parent.data, this.sortOrder);
+    this.emit('renderNewData', this.parent.data);
   }
 
   filterData(searchValue) {
-    console.log('search in table')
     if (searchValue === '') {
-      this.tableWrapper.generateCells(this.data);
+      this.emit('renderNewData', this.parent.data);
       return;
     }
-
+    console.log('search in table');
     const filteredData = [];
 
-    for (let i = 0, len = this.data.length; i < len; i++) {
-      const row = this.data[i];
+    for (let i = 0, len = this.parent.data.length; i < len; i++) {
+      const row = this.parent.data[i];
       for (let j = 0, len = row.length; j < len; j++) {
         const field = String(row[j].value);
         if (field.toLowerCase().includes(searchValue.toLowerCase())) {
@@ -81,6 +75,6 @@ export class TableController extends EventEmitter {
       }
     }
 
-    this.tableWrapper.generateCells(filteredData);
+    this.emit('renderNewData', filteredData);
   }
 }

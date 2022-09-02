@@ -49,6 +49,10 @@ textarea {
     width: 100%;
 }
 
+.editing-field div button {
+    margin: 5px;
+}
+
 
 .table tr:nth-child(even) {
     background-color: #f2f2f2;

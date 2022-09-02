@@ -1,18 +1,18 @@
-import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
+import {BaseComponent} from "./BaseComponent.js";
 
-export class Sort extends EventEmitter {
-  constructor() {
-    super();
-    this.initContainer();
+export class Sort extends BaseComponent {
+  constructor(mountPoint) {
+    super({
+      mountPoint
+    });
   }
 
-  container = undefined;
   static eventName = 'sortTable';
 
   handleEvent(e) {
     if (e.type === 'click') {
-      super.emit('sortTable', undefined);
+      this.emit('sortTable', undefined);
     }
   }
 
@@ -21,9 +21,4 @@ export class Sort extends EventEmitter {
     sortButton.addEventListener('click', this);
     this.container = sortButton;
   }
-
-  render(container) {
-    container.append(this.container);
-  }
-
 }

@@ -53,7 +53,7 @@ export class FieldEditText extends FieldEdit {
   }
 
   createInputElement(type, value) {
-    const inputElement = createDOMElement('input', '', 'form__field');
+    const inputElement = createDOMElement('input', undefined, 'form__field');
 
     if (this.max && this.min) {
       inputElement.max = this.max;
@@ -77,7 +77,7 @@ export class FieldEditorTextarea extends FieldEdit {
 
   createEditFieldTextarea() {
     const container = this.createEditFieldContainer();
-    const textarea = createDOMElement('textarea', '', 'form__textarea');
+    const textarea = createDOMElement('textarea', undefined, 'form__textarea');
     textarea.value = this.value;
     this.inputElement = textarea;
     container.prepend(textarea);

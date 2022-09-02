@@ -1,4 +1,3 @@
-import {EventEmitter} from "./EventEmitter.js";
 import {createDOMElement} from "../helper.js";
 import {
   FieldEditText,
@@ -6,20 +5,18 @@ import {
 } from "./FieldEdtor.js";
 import {DatePicker} from "./DatePicker.js";
 import {contextMenu} from "./ContextMenu.js";
+import {BaseComponent} from "./BaseComponent.js";
 
-export class Field extends EventEmitter {
-  constructor(container, field, idObj) {
-    super();
-    this.type = field.type;
-    this.value = field.value;
-    this.idRow = idObj.idRow;
-    this.idCol = idObj.idCol;
-    this.container = this.createFieldContainer();
-    container.append(this.container);
+export class Field extends BaseComponent {
+  constructor(mountPoint, field) {
+    super({
+      mountPoint,
+      type: field.type,
+      value: field.value,
+      idRow: field.idRow,
+      idCol: field.idCol,
+    });
   }
-
-  container = undefined;
-
 
   handleEvent(e, data) {
     if (e.type === 'contextmenu') {
@@ -32,13 +29,10 @@ export class Field extends EventEmitter {
     }
   }
 
-  createFieldContainer() {
-    const td = createDOMElement('td', this.value);
-    td.title = this.type;
-    td.addEventListener('contextmenu', this);
-    this.container = createDOMElement('div');
-    this.container.append(td);
-    return td;
+  initContainer() {
+    this.container = createDOMElement('td', this.value);
+    this.container.title = this.type;
+    this.container.addEventListener('contextmenu', this);
   }
 
   edit() {
@@ -48,8 +42,11 @@ export class Field extends EventEmitter {
   }
 
   saveChanges(newValue) {
+    this.container.textContent = newValue;
+    this.value = newValue;
     this.emit('saveChanges', {
-      field: this,
+      idRow: this.idRow,
+      idCol: this.idCol,
       newValue
     });
   }
@@ -57,8 +54,6 @@ export class Field extends EventEmitter {
 
 const options = {
   'number': FieldEditText,
-  'color': FieldEditText,
-  'range': FieldEditText,
   'text': FieldEditText,
   'textarea': FieldEditorTextarea,
   'date': DatePicker,

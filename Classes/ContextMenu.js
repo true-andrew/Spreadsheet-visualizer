@@ -1,11 +1,11 @@
 import {createDOMElement} from "../helper.js";
-import {EventEmitter} from "./EventEmitter.js";
+import {BaseComponent} from "./BaseComponent.js";
 
-class ContextMenu extends EventEmitter {
-  constructor() {
-    super();
-    this.container = this.initContainer();
-    document.body.append(this.container);
+class ContextMenu extends BaseComponent {
+  constructor(mountPoint) {
+    super({
+      mountPoint,
+    });
   }
 
   handleEvent(e) {
@@ -42,15 +42,12 @@ class ContextMenu extends EventEmitter {
     template.addEventListener('click', this);
     template.addEventListener('contextmenu', this);
     this.container = template
-    return this.container;
   }
 
   openContextMenuAndSaveField(e, field) {
     this.field = field;
-    const x = e.clientX;
-    const y = e.clientY;
-    this.show(x, y);
+    this.show(e.clientX, e.clientY);
   }
 }
 
-export const contextMenu = new ContextMenu()
+export const contextMenu = new ContextMenu(document.body);
