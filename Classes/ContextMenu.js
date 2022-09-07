@@ -44,6 +44,11 @@ class ContextMenu extends BaseComponent {
     this.container = template
   }
 
+  // open(e, id) {
+  //   this.id = id;
+  //   this.show(e.clientX, e.clientY);
+  // }
+
   openContextMenuAndSaveField(e, field) {
     this.field = field;
     this.show(e.clientX, e.clientY);

@@ -27,12 +27,12 @@ function compare(a, b) {
   return a < b;
 }
 
-export function insertSort(arr, order) {
+export function insertSort(arr, order, colNumber) {
   let temp;
-  for (let i = 1, len = arr.length; i < len; i++) {
+  for (let i = 2, len = arr.length; i < len; i++) {
     let j = i;
     temp = arr[i];
-    while (j > 0 && compare(Number(arr[j - 1][0].value), Number(temp[0].value)) === order) {
+    while (j > 1 && compare(arr[j - 1][colNumber].value, temp[colNumber].value) === order) {
       arr[j] = arr[j - 1];
       j--;
     }

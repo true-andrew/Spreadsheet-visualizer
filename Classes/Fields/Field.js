@@ -1,11 +1,10 @@
-import {createDOMElement} from "../helper.js";
+import {createDOMElement} from "../../helper.js";
 import {
   FieldEditText,
   FieldEditorTextarea
 } from "./FieldEdtor.js";
-import {DatePicker} from "./DatePicker.js";
-import {contextMenu} from "./ContextMenu.js";
-import {BaseComponent} from "./BaseComponent.js";
+import {DatePicker} from "../Datepicker/DatePicker.js";
+import {BaseComponent} from "../BaseComponent.js";
 
 export class Field extends BaseComponent {
   constructor(mountPoint, field) {
@@ -18,25 +17,34 @@ export class Field extends BaseComponent {
     });
   }
 
+  static eventName = 'saveChanges';
+
   handleEvent(e, data) {
-    if (e.type === 'contextmenu') {
-      e.preventDefault();
-      contextMenu.openContextMenuAndSaveField(e, this);
+    if (e.type === 'dblclick') {
+      this.edit();
     } else if (e === 'endEdit') {
       this.saveChanges(data);
     } else {
-      throw new Error(`Field class doesn't have event: ${e}`)
+      throw new Error(`Field class doesn't have event: ${e}`);
     }
   }
 
   initContainer() {
     this.container = createDOMElement('td', this.value);
     this.container.title = this.type;
-    this.container.addEventListener('contextmenu', this);
+  }
+
+  initEventListeners() {
+    this.container.addEventListener('dblclick', this);
+  }
+
+  removeEventListeners() {
+    this.container.removeEventListener('dblclick', this);
   }
 
   edit() {
     this.container.textContent = '';
+    this.removeEventListeners();
     const editingField = createEditField(this);
     editingField.on('endEdit', this);
   }
@@ -49,6 +57,7 @@ export class Field extends BaseComponent {
       idCol: this.idCol,
       newValue
     });
+    this.initEventListeners();
   }
 }
 
@@ -56,7 +65,7 @@ const options = {
   'number': FieldEditText,
   'text': FieldEditText,
   'textarea': FieldEditorTextarea,
-  'date': DatePicker,
+  'date': DatePicker
 }
 
 function createEditField(field) {

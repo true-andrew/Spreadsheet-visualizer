@@ -1,5 +1,5 @@
-import {EventEmitter} from "./EventEmitter.js";
-import {createDOMElement} from "../helper.js";
+import {EventEmitter} from "../EventEmitter.js";
+import {createDOMElement} from "../../helper.js";
 
 
 export class FieldEdit extends EventEmitter {
@@ -12,14 +12,29 @@ export class FieldEdit extends EventEmitter {
   container = undefined;
   inputElement = undefined;
 
-  handleEvent(ev) {
+  handleEvent(e) {
+    const event = 'handleEvent_' + e.type;
+    if (this[event]) {
+      this[event](e);
+    } else {
+      throw new Error(`Unhandled event: ${e.type}`);
+    }
+  }
+
+  handleEvent_click(e) {
     let outputValue;
-    if (ev.target === this.saveBtn) {
+    if (e.target === this.saveBtn) {
       outputValue = this.inputElement.value;
-    } else if (ev.target === this.discardBtn) {
+    } else if (e.target === this.discardBtn) {
       outputValue = this.value;
     }
     this.emit('endEdit', outputValue);
+  }
+
+  handleEvent_keypress(e) {
+    if (e.key === 'Enter') {
+      this.emit('endEdit', this.inputElement.value);
+    }
   }
 
   createEditFieldContainer() {
@@ -54,6 +69,7 @@ export class FieldEditText extends FieldEdit {
 
   createInputElement(type, value) {
     const inputElement = createDOMElement('input', undefined, 'form__field');
+    inputElement.addEventListener('keypress', this);
 
     if (this.max && this.min) {
       inputElement.max = this.max;

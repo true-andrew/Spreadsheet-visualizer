@@ -1,11 +1,11 @@
 export class EventEmitter {
   events = {};
 
-  on(eventName, fn) {
+  on(eventName, handler) {
     if (!this.events[eventName]) {
       this.events[eventName] = [];
     }
-    this.events[eventName].push(fn);
+    this.events[eventName].push(handler);
   }
 
   emit(eventName, data) {

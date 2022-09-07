@@ -23,11 +23,13 @@ export class BaseComponent extends EventEmitter {
       throw new Error(`Неверная точка монтирования: ${this.mountPoint}`);
     }
     this.initContainer();
+    this.initEventListeners();
     this.render();
   }
 
-  initContainer() {
-  }
+  initContainer() {}
+
+  initEventListeners() {}
 
   render() {
     this.mountPoint.append(this.container);

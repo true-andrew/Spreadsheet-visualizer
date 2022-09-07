@@ -1,16 +1,46 @@
 const data = [
   [
     {
+      type: 'header',
+      value: 'Document ID',
+    },
+    {
+      type: 'header',
+      value: 'Document name',
+    },
+    {
+      type: 'header',
+      value: 'User',
+    },
+    {
+      type: 'header',
+      value: 'Size (Kb)',
+    },
+    {
+      type: 'header',
+      value: 'Date',
+    }
+  ],
+  [
+    {
       type: 'number',
       value: 1
     },
     {
       type: 'text',
-      value: 'concat',
+      value: 'Operations',
     },
     {
-      type: 'textarea',
-      value: 'Return new array by joining arrays a1 and a2 together'
+      type: 'text',
+      value: 'Andrew'
+    },
+    {
+      type: 'number',
+      value: 432,
+    },
+    {
+      type: 'date',
+      value: '12.05.2022'
     }
   ],
   [
@@ -20,11 +50,19 @@ const data = [
     },
     {
       type: 'text',
-      value: 'join',
+      value: 'Taxes',
     },
     {
-      type: 'textarea',
-      value: 'Join all elements of array a1 into a string separated by separator arg'
+      type: 'text',
+      value: 'Julia'
+    },
+    {
+      type: 'number',
+      value: 221,
+    },
+    {
+      type: 'date',
+      value: '03.01.2021'
     }
   ],
   [
@@ -34,95 +72,19 @@ const data = [
     },
     {
       type: 'text',
-      value: 'slice',
-    },
-    {
-      type: 'textarea',
-      value: 'Extract a section from start to end of array a1 and return a new array'
-    }
-  ],
-  [
-    {
-      type: 'number',
-      value: 4
+      value: 'Example',
     },
     {
       type: 'text',
-      value: 'indexOf',
+      value: 'Ivan'
     },
-    {
-      type: 'textarea',
-      value: 'Return first index of obj within array a1'
-    }
-  ],
-  [
     {
       type: 'number',
-      value: 5
+      value: 1033,
     },
     {
-      type: 'text',
-      value: 'lastIndexOf',
-    },
-    {
-      type: 'textarea',
-      value: 'Return last index of obj within array a1'
-    }
-  ],
-  [
-    {
-      type: 'number',
-      value: 6
-    },
-    {
-      type: 'text',
-      value: 'forEach',
-    },
-    {
-      type: 'textarea',
-      value: 'Calls function fn for each element in the array a1'
-    }
-  ],
-  [
-    {
-      type: 'number',
-      value: 7
-    },
-    {
-      type: 'text',
-      value: 'every',
-    },
-    {
-      type: 'textarea',
-      value: 'Return true if every element in array a1 satisfies provided testing function fn'
-    }
-  ],
-  [
-    {
-      type: 'number',
-      value: 8
-    },
-    {
-      type: 'text',
-      value: 'some',
-    },
-    {
-      type: 'textarea',
-      value: 'Return true if at least one element in array a1 satisfies provided testing function fn'
-    }
-  ],
-  [
-    {
-      type: 'number',
-      value: 9
-    },
-    {
-      type: 'text',
-      value: 'filter',
-    },
-    {
-      type: 'textarea',
-      value: 'Create a new array with all elements of array a1 which pass the filtering function fn'
+      type: 'date',
+      value: '08.06.2022'
     }
   ]
 ];

@@ -1,40 +1,102 @@
+import {BaseComponent} from "../BaseComponent.js";
+import {FieldEdit} from "../Fields/FieldEdtor.js";
+
 const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-
-export class DatePicker {
+export class DatePicker extends BaseComponent {
   //elements
-  container = undefined;
-  calendar = undefined;
-  inputElement = undefined;
-  prevMonthElement = undefined;
-  nextMonthElement = undefined;
-  monthElement = undefined;
-  weekDays = undefined;
-  daysElement = undefined;
-  todayBtn = undefined;
+  // container = undefined;
+  // calendar = undefined;
+  // inputElement = undefined;
+  // prevMonthElement = undefined;
+  // nextMonthElement = undefined;
+  // monthElement = undefined;
+  // weekDays = undefined;
+  // daysElement = undefined;
+  // todayBtn = undefined;
   //data
-  displayedDate = undefined;
-  selectedDate = undefined;
-  viewMode = undefined;
+  // displayedDate = undefined;
+  // selectedDate = undefined;
+  // viewMode = undefined;
   //regexp
   regExDelete = /delete/;
   regExIsNumber = /\d/;
   regExIsNotNumber = /\D/;
 
-  constructor(element) {
-    this.container = element;
+  constructor(mountPoint, field) {
+    super({
+      mountPoint,
+      field,
+    });
+  }
+
+  init() {
+    this.mountPoint.classList.add('date-picker');
     this.displayedDate = new Date();
-    this.render();
+    super.init();
+    this.setInitDate();
+  }
+
+  setInitDate() {
+    const date = this.field.value.split('.').reverse().join('.');
+    // this.setDate(new Date(date[2], date[1] - 1, date[0]));
+    this.setDate(date);
   }
 
   handleEvent(ev) {
-    const eventName = 'handleEvent_'+ ev.type;
+    const eventName = 'handleEvent_' + ev.type;
     if (this[eventName] !== undefined) {
       this[eventName](ev);
     } else {
       throw new Error('Unhandled event');
     }
+  }
+
+  initContainer() {
+    this.container = createEl('div');
+    this.inputElement = createEl('input', 'selected-date', '', {
+      type: 'text',
+      placeholder: 'DD.MM.YYYY',
+      maxLength: 11,
+    });
+
+    this.calendar = createEl('div', 'calendar', '', {tabIndex: -1});
+
+    const monthHeader = createEl('div', 'month-header');
+    this.prevMonthElement = createEl('div', 'arrows prev', '<');
+    this.nextMonthElement = createEl('div', 'arrows next', '>');
+    this.monthElement = createEl('div', 'mth');
+
+    monthHeader.append(this.prevMonthElement, this.monthElement, this.nextMonthElement);
+
+    this.weekDays = createEl('div', 'weekDays');
+
+    for (let dayName of WEEK_DAY_NAMES) {
+      const el = createEl('div', '', dayName);
+      this.weekDays.append(el);
+    }
+
+    this.daysElement = createEl('div', 'visible-area days');
+
+    this.todayBtn = createEl('button', 'btn today', 'Сегодня', undefined, {
+      year: this.displayedDate.getFullYear(),
+      month: this.displayedDate.getMonth(),
+      day: this.displayedDate.getDate(),
+      action: 'pickDate'
+    });
+
+    this.calendar.append(monthHeader, this.weekDays, this.daysElement, this.todayBtn);
+    this.container.append(this.inputElement, this.calendar);
+    this.viewMode = 'days';
+    this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
+  }
+
+  initEventListeners() {
+    this.calendar.addEventListener('click', this);
+    this.inputElement.addEventListener('focus', this);
+    this.inputElement.addEventListener('blur', this);
+    this.inputElement.addEventListener('input', this);
   }
 
   handleEvent_blur(ev) {
@@ -43,6 +105,8 @@ export class DatePicker {
     }
 
     this.hide();
+    this.mountPoint.classList.remove('date-picker');
+    this.emit('endEdit', this.inputElement.value);
   }
 
   handleEvent_focus(ev) {
@@ -125,8 +189,8 @@ export class DatePicker {
   renderDays(year, month) {
     this.daysElement.classList.replace('months', 'days');
 
-    const equalMonth = this.displayedDate.getMonth() === +month;
-    const equalYear = this.displayedDate.getFullYear() === +year;
+    const equalMonth = this.displayedDate.getMonth() === Number(month);
+    const equalYear = this.displayedDate.getFullYear() === Number(year);
 
     if (this.selectedDate && equalMonth && equalYear) {
       this.setSelectedElement(this.daysElement, this.selectedDate);
@@ -294,7 +358,6 @@ export class DatePicker {
 
     this.daysElement.replaceChildren(yearsContainer);
   }
-
   handleEvent_input(ev) {
     if (this.regExDelete.test(ev.inputType)) {
       return;
@@ -360,53 +423,6 @@ export class DatePicker {
 
     ev.target.selectionStart = ev.target.selectionEnd = cursorPosition + 1;
   }
-
-  render() {
-    this.inputElement = createEl('input', 'selected-date', '', {
-      type: 'text',
-      placeholder: 'DD.MM.YYYY',
-      maxLength: 11,
-    });
-
-    this.calendar = createEl('div', 'calendar', '', {tabIndex: -1});
-
-    const monthHeader = createEl('div', 'month-header');
-    this.prevMonthElement = createEl('div', 'arrows prev', '<');
-    this.nextMonthElement = createEl('div', 'arrows next', '>');
-    this.monthElement = createEl('div', 'mth');
-
-    monthHeader.append(this.prevMonthElement, this.monthElement, this.nextMonthElement);
-
-    this.weekDays = createEl('div', 'weekDays');
-
-    for (let dayName of WEEK_DAY_NAMES) {
-      const el = createEl('div', '', dayName);
-      this.weekDays.append(el);
-    }
-
-    this.daysElement = createEl('div', 'visible-area days');
-
-    this.todayBtn = createEl('button', 'btn today', 'Сегодня', undefined, {
-      year: this.displayedDate.getFullYear(),
-      month: this.displayedDate.getMonth(),
-      day: this.displayedDate.getDate(),
-      action: 'pickDate'
-    });
-
-
-    this.calendar.append(monthHeader, this.weekDays, this.daysElement, this.todayBtn);
-
-    this.calendar.addEventListener('click', this);
-    this.inputElement.addEventListener('focus', this);
-    this.inputElement.addEventListener('blur', this);
-    this.inputElement.addEventListener('input', this);
-
-    this.container.append(this.inputElement, this.calendar);
-
-    this.viewMode = 'days';
-
-    this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
-  }
 }
 
 //Helper Functions
@@ -436,7 +452,9 @@ function getLocalDay(date) {
 
 function createEl(elName, classList, text, options, dataset) {
   const el = document.createElement(elName);
-  el.classList = classList;
+  if (classList) {
+    el.classList = classList;
+  }
   if (text) {
     el.textContent = text;
   }
