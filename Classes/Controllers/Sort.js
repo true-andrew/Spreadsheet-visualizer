@@ -6,6 +6,7 @@ export class Sort extends BaseComponent {
   sortOrder = true;
   constructor(mountPoint, tableApp) {
     super(mountPoint);
+    this.init();
     this.tableApp = tableApp;
   }
 
@@ -19,9 +20,10 @@ export class Sort extends BaseComponent {
   }
 
   initContainer() {
+    this.container = createDOMElement('div');
     const sortButton = createDOMElement('button', 'Reset sort');
     sortButton.addEventListener('click', this);
-    this.container = sortButton;
+    this.container.append(sortButton);
   }
 
   sortData(colNumber) {
