@@ -2,11 +2,13 @@ import {createDOMElement} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 export class TableController extends BaseComponent {
+  tableController_Sort;
+  tableController_Search;
   constructor(mountPoint, tableApp, controllers) {
     super(mountPoint);
-    this.tableApp = tableApp
-    this.initControllers(controllers);
+    this.tableApp = tableApp;
     this.init();
+    this.initControllers(controllers);
   }
 
   initContainer() {
