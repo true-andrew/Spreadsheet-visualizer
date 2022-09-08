@@ -1,8 +1,8 @@
 import {createDOMElement} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
-import {Field} from "../Fields/Field.js";
+import {TextField} from "../Fields/TextField.js";
 import {HeaderField} from "../Fields/HeaderField.js";
-import {UserPopup} from "../Fields/UserPopup.js";
+import {UserField} from "../Fields/UserField.js";
 
 export class TableVisualisator extends BaseComponent {
   constructor(mountPoint, tableApp) {
@@ -34,21 +34,24 @@ export class TableVisualisator extends BaseComponent {
 
       this.container.append(row);
     }
+
   }
 }
 
 const fields = {
-  'number': Field,
-  'text': Field,
-  'textarea': Field,
-  'user': UserPopup,
-  'date': Field,
-  'header': HeaderField
+  'number': TextField,
+  'text': TextField,
+  'textarea': TextField,
+  'date': TextField,
+  'user': UserField,
+  'header': HeaderField,
 }
 
 function createField(mountPoint, fieldObj, eventHandler) {
   const fieldClass = fields[fieldObj.type];
   const field = new fieldClass(mountPoint, fieldObj);
-  field.on(fieldClass.eventName, eventHandler);
+  if (fieldClass.eventName) {
+    field.on(fieldClass.eventName, eventHandler);
+  }
   return field;
 }
