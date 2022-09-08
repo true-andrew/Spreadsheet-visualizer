@@ -1,5 +1,4 @@
 import {BaseComponent} from "../BaseComponent.js";
-import {FieldEdit} from "../Fields/FieldEdtor.js";
 
 const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -35,11 +34,11 @@ export class DatePicker extends BaseComponent {
     this.displayedDate = new Date();
     super.init();
     this.setInitDate();
+    this.show();
   }
 
   setInitDate() {
-    const date = this.field.value.split('.').reverse().join('.');
-    // this.setDate(new Date(date[2], date[1] - 1, date[0]));
+    const date = this.field.value.split('.').reverse().join('-');
     this.setDate(date);
   }
 
