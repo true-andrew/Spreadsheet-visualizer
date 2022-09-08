@@ -12,29 +12,40 @@ export class UserPopup extends BaseComponent {
 
   handleEvent(e) {
     if (e.type === 'mouseenter') {
-      this.showPopUp();
-
+      this.showPopUp(e);
     } else if (e.type === 'mouseleave') {
       this.hidePopUp();
     }
   }
 
-  showPopUp() {
-    const user = createDOMElement('div', undefined, 'user-card');
-    const photo = createDOMElement('div', undefined, 'user-card__photo');
-    const name = createDOMElement('h3', this.value);
-    const additionalInfo = Object.keys(this.additional);
-    user.append(photo, name);
-
-    for (let i = 0, len = additionalInfo.length; i < len; i++) {
-      const p = createDOMElement('p', this.additional[additionalInfo[i]]);
-      user.append(p);
-    }
-    this.container.replaceChildren(user);
+  showPopUp(e) {
+    this.createUserCard();
+    this.setUserCardPosition(e);
+    this.user.addEventListener('mouseleave', this);
+    document.body.append(this.user);
   }
 
   hidePopUp() {
-    this.container.textContent = this.value;
+    this.user.remove();
+  }
+
+  createUserCard() {
+    this.user = createDOMElement('div', undefined, 'user-card');
+    const photo = createDOMElement('div', undefined, 'user-card__photo');
+    const name = createDOMElement('h3', this.value);
+    const additionalInfo = Object.keys(this.additional);
+    this.user.append(photo, name);
+
+    for (let i = 0, len = additionalInfo.length; i < len; i++) {
+      const p = createDOMElement('p', this.additional[additionalInfo[i]]);
+      this.user.append(p);
+    }
+  }
+
+  setUserCardPosition(e) {
+    this.user.style.position = 'absolute';
+    this.user.style.top = e.clientY;
+    this.user.style.left = e.clientX;
   }
 
   initContainer() {
@@ -43,7 +54,6 @@ export class UserPopup extends BaseComponent {
 
   initEventListeners() {
     this.container.addEventListener('mouseenter', this);
-    this.container.addEventListener('mouseleave', this)
   }
 
 }
