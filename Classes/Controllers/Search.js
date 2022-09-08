@@ -3,10 +3,8 @@ import {BaseComponent} from "../BaseComponent.js";
 
 export class Search extends BaseComponent {
   constructor(mountPoint, tableApp) {
-    super({
-      mountPoint,
-      tableApp
-    });
+    super(mountPoint);
+    this.tableApp = tableApp;
   }
 
   handleEvent(e) {

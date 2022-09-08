@@ -8,13 +8,12 @@ import {BaseComponent} from "../BaseComponent.js";
 
 export class Field extends BaseComponent {
   constructor(mountPoint, field) {
-    super({
-      mountPoint,
-      type: field.type,
-      value: field.value,
-      idRow: field.idRow,
-      idCol: field.idCol,
-    });
+    super(mountPoint);
+    this.type = field.type;
+    this.value = field.value;
+    this.idRow = field.idRow;
+    this.idCol = field.idCol;
+    this.init();
   }
 
   static eventName = 'saveChanges';

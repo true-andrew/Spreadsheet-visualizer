@@ -6,29 +6,28 @@ const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
   //elements
-  // container = undefined;
-  // calendar = undefined;
-  // inputElement = undefined;
-  // prevMonthElement = undefined;
-  // nextMonthElement = undefined;
-  // monthElement = undefined;
-  // weekDays = undefined;
-  // daysElement = undefined;
-  // todayBtn = undefined;
+  container;
+  calendar;
+  inputElement;
+  prevMonthElement;
+  nextMonthElement;
+  monthElement;
+  weekDays;
+  daysElement;
+  todayBtn;
   //data
-  // displayedDate = undefined;
-  // selectedDate = undefined;
-  // viewMode = undefined;
+  displayedDate = undefined;
+  selectedDate = undefined;
+  viewMode = undefined;
   //regexp
   regExDelete = /delete/;
   regExIsNumber = /\d/;
   regExIsNotNumber = /\D/;
 
   constructor(mountPoint, field) {
-    super({
-      mountPoint,
-      field,
-    });
+    super(mountPoint);
+    this.field = field;
+    this.init();
   }
 
   init() {

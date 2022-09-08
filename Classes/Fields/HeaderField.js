@@ -3,11 +3,10 @@ import {createDOMElement} from "../../helper.js";
 
 export class HeaderField extends BaseComponent {
   constructor(mountPoint, field) {
-    super({
-      mountPoint,
-      value: field.value,
-      idCol: field.idCol
-    });
+    super(mountPoint);
+    this.value = field.value;
+    this.idCol = field.idCol;
+    this.init();
   }
 
   static eventName = 'sortData';

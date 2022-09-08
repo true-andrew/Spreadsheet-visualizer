@@ -1,10 +1,11 @@
 import {EventEmitter} from "./EventEmitter.js";
 
 export class BaseComponent extends EventEmitter {
-  constructor(options) {
+  constructor(container) {
     super();
-    this.registerOptions(options);
-    this.init();
+    this.mountPoint = container;
+    // this.registerOptions(options);
+    // this.init();
   }
 
   container = undefined;

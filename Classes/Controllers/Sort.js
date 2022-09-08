@@ -2,14 +2,12 @@ import {createDOMElement, insertSort} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 export class Sort extends BaseComponent {
-  constructor(mountPoint, tableApp) {
-    super({
-      mountPoint,
-      tableApp
-    });
-  }
-
+  tableApp;
   sortOrder = true;
+  constructor(mountPoint, tableApp) {
+    super(mountPoint);
+    this.tableApp = tableApp;
+  }
 
   handleEvent(e) {
     if (e.type === 'click') {

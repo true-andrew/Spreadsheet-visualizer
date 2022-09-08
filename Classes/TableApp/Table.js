@@ -5,11 +5,13 @@ import {Search} from "../Controllers/Search.js";
 import {Sort} from "../Controllers/Sort.js";
 
 export class Table extends BaseComponent {
+  data;
+  tableController;
+  tableVisualisator;
   constructor(id, data) {
-    super({
-      mountPoint: document.getElementById(id),
-      data,
-    });
+    super(document.getElementById(id));
+    this.data = data;
+    this.init();
   }
 
   handleEvent(e, data) {
