@@ -20,11 +20,24 @@ export function createDOMElement(type, textContent, className, dataset) {
   return element;
 }
 
-function compare(a, b) {
+function compare(first, second) {
+  let a;
+  let b;
+  if (first.type === 'date') {
+    a = dateToNumber(first.value);
+    b = dateToNumber(second.value);
+  } else {
+    a = first.value;
+    b = second.value;
+  }
   if (a === b) {
     return 0;
   }
   return a < b;
+}
+
+function dateToNumber(date) {
+  return Date.parse(date.split('.').reverse().join('-'));
 }
 
 export function insertSort(arr, order, colNumber) {
@@ -32,7 +45,7 @@ export function insertSort(arr, order, colNumber) {
   for (let i = 2, len = arr.length; i < len; i++) {
     let j = i;
     temp = arr[i];
-    while (j > 1 && compare(arr[j - 1][colNumber].value, temp[colNumber].value) === order) {
+    while (j > 1 && compare(arr[j - 1][colNumber], temp[colNumber]) === order) {
       arr[j] = arr[j - 1];
       j--;
     }
