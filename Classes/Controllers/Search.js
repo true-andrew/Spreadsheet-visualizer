@@ -5,23 +5,45 @@ export class Search extends BaseComponent {
   constructor(mountPoint, tableApp) {
     super(mountPoint);
     this.tableApp = tableApp;
+    this.init();
   }
 
   handleEvent(e) {
-    if (e.type === 'change') {
-      this.filterData(e.target.value);
+    if (e.type === 'keypress') {
+      this.handleKeyPress(e);
     } else {
       throw new Error(`Unhandled ev: ${e.type}`);
     }
   }
 
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.filterData(e.target.value);
+    }
+  }
+
   initContainer() {
     const container = createDOMElement('div');
-    const label = createDOMElement('label', 'Search Field:');
     const inputElement = createDOMElement('input');
-    inputElement.addEventListener('change', this);
-    container.append(label, inputElement);
+    inputElement.placeholder = 'Search';
+    const selectElement = this.createSelector();
+    inputElement.addEventListener('keypress', this);
+    container.append(inputElement, selectElement);
     this.container = container;
+  }
+
+  createSelector() {
+    this.selectColumnElement = createDOMElement('select');
+    const initSelectValue = createDOMElement('option', 'All columns');
+    initSelectValue.value = 'all';
+    this.selectColumnElement.append(initSelectValue);
+    for (let i = 0, len = this.tableApp.data[0].length; i < len; i++) {
+      const option = createDOMElement('option', this.tableApp.data[0][i].value);
+      option.value = i;
+      this.selectColumnElement.append(option);
+    }
+
+    return this.selectColumnElement;
   }
 
   filterData(searchValue) {
@@ -33,18 +55,37 @@ export class Search extends BaseComponent {
     const filteredData = [];
     filteredData.push(this.tableApp.data[0]);
 
-    for (let i = 1, len = this.tableApp.data.length; i < len; i++) {
-      const row = this.tableApp.data[i];
-      for (let j = 0, len = row.length; j < len; j++) {
-        const field = String(row[j].value);
-        if (field.toLowerCase().includes(searchValue.toLowerCase())) {
-          if (!filteredData.includes(row)) {
-            filteredData.push(row);
-          }
-        }
-      }
+    if(this.selectColumnElement.value === 'all') {
+      this.checkAllColumns(filteredData, searchValue);
+    } else {
+      this.checkColumn(filteredData, searchValue, this.selectColumnElement.value);
     }
 
     this.emit('renderNewData', filteredData);
+  }
+
+  checkAllColumns(filteredData, searchValue) {
+    for (let i = 1, len = this.tableApp.data.length; i < len; i++) {
+      const row = this.tableApp.data[i];
+      for (let j = 0, len = row.length; j < len; j++) {
+        appendToFiltered(filteredData, row, j, searchValue);
+      }
+    }
+  }
+
+  checkColumn(filteredData, searchValue, columnNumber) {
+    for (let i = 1, len = this.tableApp.data.length; i < len; i++) {
+      const row = this.tableApp.data[i];
+      appendToFiltered(filteredData, row, columnNumber, searchValue);
+    }
+  }
+}
+
+function appendToFiltered(filteredData, row, columnNumber, searchValue) {
+  const fieldValue = String(row[columnNumber].value);
+  if (fieldValue.toLowerCase().includes(searchValue.toLowerCase())) {
+    if (!filteredData.includes(row)) {
+      filteredData.push(row);
+    }
   }
 }
