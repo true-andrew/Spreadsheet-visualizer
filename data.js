@@ -31,8 +31,11 @@ const data = [
       value: 'Operations',
     },
     {
-      type: 'text',
-      value: 'Andrew'
+      type: 'user',
+      value: 'Andrew',
+      additional: {
+        tel: 79096754545
+      },
     },
     {
       type: 'number',
@@ -53,8 +56,11 @@ const data = [
       value: 'Taxes',
     },
     {
-      type: 'text',
-      value: 'Julia'
+      type: 'user',
+      value: 'Julia',
+      additional: {
+        tel: 7999444555
+      },
     },
     {
       type: 'number',
@@ -75,8 +81,12 @@ const data = [
       value: 'Example',
     },
     {
-      type: 'text',
-      value: 'Ivan'
+      type: 'user',
+      value: 'Ivan',
+      additional: {
+        tel: 89651277775,
+        email: 'fdkjnfdjknfd@gmail.com'
+      },
     },
     {
       type: 'number',
