@@ -21,7 +21,6 @@ export class UserPopup extends BaseComponent {
   showPopUp(e) {
     this.createUserCard();
     this.setUserCardPosition(e);
-    this.user.addEventListener('mouseleave', this);
     document.body.append(this.user);
   }
 
@@ -40,6 +39,8 @@ export class UserPopup extends BaseComponent {
       const p = createDOMElement('p', this.additional[additionalInfo[i]]);
       this.user.append(p);
     }
+
+    this.user.addEventListener('mouseleave', this);
   }
 
   setUserCardPosition(e) {
@@ -55,5 +56,4 @@ export class UserPopup extends BaseComponent {
   initEventListeners() {
     this.container.addEventListener('mouseenter', this);
   }
-
 }
