@@ -2,13 +2,13 @@ import {createDOMElement} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {Field} from "../Fields/Field.js";
 import {HeaderField} from "../Fields/HeaderField.js";
+import {UserPopup} from "../Fields/UserPopup.js";
 
 export class TableVisualisator extends BaseComponent {
-  constructor(container, tableApp) {
-    super({
-      mountPoint: container,
-      tableApp,
-    });
+  constructor(mountPoint, tableApp) {
+    super(mountPoint);
+    this.tableApp = tableApp;
+    this.init();
   }
 
   init() {
@@ -41,6 +41,7 @@ const fields = {
   'number': Field,
   'text': Field,
   'textarea': Field,
+  'user': UserPopup,
   'date': Field,
   'header': HeaderField
 }
