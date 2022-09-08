@@ -6,7 +6,11 @@ import {
 import {DatePicker} from "../Datepicker/DatePicker.js";
 import {BaseComponent} from "../BaseComponent.js";
 
-export class Field extends BaseComponent {
+export class TextField extends BaseComponent {
+  type;
+  value;
+  idRow;
+  idCol;
   constructor(mountPoint, field) {
     super(mountPoint);
     this.type = field.type;

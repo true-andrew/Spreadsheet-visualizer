@@ -1,7 +1,7 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {createDOMElement} from "../../helper.js";
 
-export class UserPopup extends BaseComponent {
+export class UserField extends BaseComponent {
   constructor(mountPoint, field) {
     super(mountPoint);
     this.type = field.type;
