@@ -9,8 +9,10 @@ export class FieldEdit extends EventEmitter {
     this.value = controlOption.value;
   }
 
-  container = undefined;
-  inputElement = undefined;
+  container;
+  inputElement;
+  saveBtn;
+  discardBtn;
 
   handleEvent(e) {
     const event = 'handleEvent_' + e.type;
@@ -70,12 +72,6 @@ export class FieldEditText extends FieldEdit {
   createInputElement(type, value) {
     const inputElement = createDOMElement('input', undefined, 'form__field');
     inputElement.addEventListener('keypress', this);
-
-    if (this.max && this.min) {
-      inputElement.max = this.max;
-      inputElement.min = this.min;
-    }
-
     inputElement.id = this.name;
     inputElement.required = true;
     inputElement.type = type;
