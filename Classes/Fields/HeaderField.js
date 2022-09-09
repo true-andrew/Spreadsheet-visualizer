@@ -8,8 +8,8 @@ export class HeaderField extends BaseComponent {
     this.idCol = field.idCol;
     this.init();
   }
-
-  static eventName = 'sortData';
+  
+  eventName = 'sortData';
 
   handleEvent(e) {
     if (e.type === 'click') {
