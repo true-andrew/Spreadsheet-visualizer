@@ -1,4 +1,4 @@
-const data = [
+const documents = [
   [
     {
       type: 'header',
@@ -99,12 +99,16 @@ const data = [
   ]
 ];
 
-for (let i = 0, len = data.length; i < len; i++) {
-  const row = data[i];
-  for (let j = 0, len = row.length; j < len; j++) {
-    data[i][j].idRow = i;
-    data[i][j].idCol = j;
+function addIdToData(data) {
+  for (let i = 0, len = data.length; i < len; i++) {
+    const row = data[i];
+    for (let j = 0, len = row.length; j < len; j++) {
+      data[i][j].idRow = i;
+      data[i][j].idCol = j;
+    }
   }
 }
 
-export {data};
+addIdToData(documents);
+
+export {documents};
