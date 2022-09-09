@@ -4,8 +4,13 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
+  constructor(mountPoint, field) {
+    super(mountPoint);
+    this.field = field;
+    this.init();
+  }
+
   //elements
-  container;
   calendar;
   inputElement;
   prevMonthElement;
@@ -22,12 +27,6 @@ export class DatePicker extends BaseComponent {
   regExDelete = /delete/;
   regExIsNumber = /\d/;
   regExIsNotNumber = /\D/;
-
-  constructor(mountPoint, field) {
-    super(mountPoint);
-    this.field = field;
-    this.init();
-  }
 
   init() {
     this.mountPoint.classList.add('date-picker');

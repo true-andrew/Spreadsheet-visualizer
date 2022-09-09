@@ -1,27 +1,28 @@
 import {createDOMElement} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
+import {Search} from "../Controllers/Search.js";
+import {Sort} from "../Controllers/Sort.js";
 
 export class TableController extends BaseComponent {
-  tableController_Sort;
-  tableController_Search;
-  constructor(mountPoint, tableApp, controllers) {
+  constructor(mountPoint, tableApp) {
     super(mountPoint);
     this.tableApp = tableApp;
     this.init();
-    this.initControllers(controllers);
+    this.initControllers();
   }
+
+  tableController_Sort;
+  tableController_Search;
 
   initContainer() {
     this.container = createDOMElement('div', undefined, 'controllers');
   }
 
-  initControllers(controllers) {
-    for (let i = 0, len = controllers.length; i < len; i++) {
-      const controller = controllers[i];
-      const controllerName = 'tableController_' + controllers[i].name;
-      this[controllerName] = new controller(this.container, this.tableApp);
-      this[controllerName].on('renderNewData', this.tableApp);
-    }
+  initControllers() {
+    this.tableController_Search = new Search(this.container, this.tableApp);
+    this.tableController_Sort = new Sort(this.container, this.tableApp);
+    this.tableController_Sort.on('renderNewData', this.tableApp);
+    this.tableController_Search.on('renderNewData', this.tableApp);
   }
 
   saveChanges(data) {

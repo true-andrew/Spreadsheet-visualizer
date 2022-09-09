@@ -7,10 +7,6 @@ import {DatePicker} from "../Datepicker/DatePicker.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 export class TextField extends BaseComponent {
-  type;
-  value;
-  idRow;
-  idCol;
   constructor(mountPoint, field) {
     super(mountPoint);
     this.type = field.type;
@@ -20,7 +16,11 @@ export class TextField extends BaseComponent {
     this.init();
   }
 
-  static eventName = 'saveChanges';
+  type;
+  value;
+  idRow;
+  idCol;
+  eventName = 'saveChanges';
 
   handleEvent(e, data) {
     if (e.type === 'dblclick') {

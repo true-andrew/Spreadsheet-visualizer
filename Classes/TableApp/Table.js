@@ -1,18 +1,17 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {TableController} from "./TableController.js";
 import {TableVisualisator} from "./TableVisualisator.js";
-import {Search} from "../Controllers/Search.js";
-import {Sort} from "../Controllers/Sort.js";
 
 export class Table extends BaseComponent {
-  data;
-  tableController;
-  tableVisualisator;
   constructor(id, data) {
     super(document.getElementById(id));
     this.data = data;
     this.init();
   }
+
+  data;
+  tableController;
+  tableVisualisator;
 
   handleEvent(e, data) {
     if (e === 'saveChanges') {
@@ -29,14 +28,14 @@ export class Table extends BaseComponent {
   }
 
   init() {
-    this.tableController = new TableController(this.mountPoint, this, [Search, Sort]);
+    this.tableController = new TableController(this.mountPoint, this);
     this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
     // this.tableFooter = null
     this.initEventListeners()
   }
 
   initEventListeners() {
-    this.tableController.on('renderNewData', this);
-    this.tableVisualisator.on('saveChanges', this);
+    // this.tableController.on('renderNewData', this);
+    // this.tableVisualisator.on('saveChanges', this);
   }
 }

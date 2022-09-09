@@ -10,6 +10,8 @@ export class UserField extends BaseComponent {
     this.init();
   }
 
+  user;
+
   handleEvent(e) {
     if (e.type === 'mouseenter') {
       this.showPopUp(e);
