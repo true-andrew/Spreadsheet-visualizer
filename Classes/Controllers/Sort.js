@@ -2,21 +2,31 @@ import {createDOMElement, insertSort} from "../../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 export class Sort extends BaseComponent {
-  tableApp;
-  sortOrder = true;
   constructor(mountPoint, tableApp) {
     super(mountPoint);
     this.init();
     this.tableApp = tableApp;
   }
 
+  tableApp;
+  sortOrder = true;
+  reset = false;
+
   handleEvent(e) {
     if (e.type === 'click') {
-      this.sortOrder = true;
-      this.emit('renderNewData', this.tableApp.data);
+      this.handleResetSort(e);
     } else {
       throw new Error(`Unhandled ev: ${e.type}`);
     }
+  }
+
+  handleResetSort(e) {
+    if (this.reset === true) {
+      return;
+    }
+    this.reset = true;
+    this.sortOrder = true;
+    this.emit('renderNewData', this.tableApp.data);
   }
 
   initContainer() {
@@ -28,6 +38,7 @@ export class Sort extends BaseComponent {
 
   sortData(colNumber) {
     console.log('sort table');
+    this.reset = false;
     this.sortOrder = !this.sortOrder;
     const sortData = [].concat(this.tableApp.data);
     insertSort(sortData, this.sortOrder, colNumber);

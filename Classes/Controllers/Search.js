@@ -8,6 +8,8 @@ export class Search extends BaseComponent {
     this.init();
   }
 
+  searchInputValue = '';
+
   handleEvent(e) {
     if (e.type === 'keypress') {
       this.handleKeyPress(e);
@@ -17,7 +19,12 @@ export class Search extends BaseComponent {
   }
 
   handleKeyPress(e) {
+    //Проверка на инпут
+    if (this.searchInputValue === e.target.value) {
+      return;
+    }
     if (e.key === 'Enter') {
+      this.searchInputValue = e.target.value;
       this.filterData(e.target.value);
     }
   }
@@ -48,10 +55,6 @@ export class Search extends BaseComponent {
 
   filterData(searchValue) {
     console.log('search in table');
-    if (searchValue === '') {
-      this.emit('renderNewData', this.tableApp.data);
-      return;
-    }
     const filteredData = [];
     filteredData.push(this.tableApp.data[0]);
 
@@ -61,7 +64,7 @@ export class Search extends BaseComponent {
       this.checkColumn(filteredData, searchValue, this.selectColumnElement.value);
     }
 
-    this.emit('renderNewData', filteredData);
+    this.tableApp.handleEvent('renderNewData', filteredData);
   }
 
   checkAllColumns(filteredData, searchValue) {
