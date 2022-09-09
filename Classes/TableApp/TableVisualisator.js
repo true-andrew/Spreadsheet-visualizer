@@ -11,6 +11,8 @@ export class TableVisualisator extends BaseComponent {
     this.init();
   }
 
+  tableApp;
+
   init() {
     super.init();
     this.generateCells(this.tableApp.data);
@@ -21,6 +23,7 @@ export class TableVisualisator extends BaseComponent {
   }
 
   generateCells(data) {
+    console.log('render data');
     this.container.textContent = '';
 
     for (let i = 0, len = data.length; i < len; i++) {
@@ -34,7 +37,6 @@ export class TableVisualisator extends BaseComponent {
 
       this.container.append(row);
     }
-
   }
 }
 
@@ -48,10 +50,9 @@ const fields = {
 }
 
 function createField(mountPoint, fieldObj, eventHandler) {
-  const fieldClass = fields[fieldObj.type];
-  const field = new fieldClass(mountPoint, fieldObj);
-  if (fieldClass.eventName) {
-    field.on(fieldClass.eventName, eventHandler);
+  const field = new fields[fieldObj.type](mountPoint, fieldObj);
+  if (field.eventName) {
+    field.on(field.eventName, eventHandler);
   }
   return field;
 }
