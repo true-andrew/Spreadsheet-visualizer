@@ -1,0 +1,25 @@
+.user-card {
+    width: 200px;
+    border-radius: 15px;
+    background-color: #93d4ff;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-card__photo {
+    width: 100px;
+    height: 100px;
+    background-color: #262626;
+    border-radius: 50%;
+    align-self: center;
+}
+
+.user-card h3 {
+    text-align: center;
+}
+
+.user-card p {
+    text-align: center;
+}
