@@ -12,6 +12,8 @@ export class TableComponent extends BaseComponent {
 
   data;
   tableVisualisator;
+  sortOrder = false;
+  searchComponent;
 
   handleEvent(e, data) {
     if (e === 'saveChanges') {
@@ -28,18 +30,16 @@ export class TableComponent extends BaseComponent {
   }
 
   init() {
-    this.initControllers()
+    this.initControllers();
     this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
-    this.initEventListeners();
   }
 
   sortData(colNumber) {
     console.log('sort table');
-    this.reset = false;
     this.sortOrder = !this.sortOrder;
     const sortData = [].concat(this.data);
     insertSort(sortData, this.sortOrder, colNumber);
-    this.handleEvent('renderNewData', sortData);
+    this.tableVisualisator.generateCells(sortData);
   }
 
   saveChanges(data) {
@@ -48,7 +48,7 @@ export class TableComponent extends BaseComponent {
   }
 
   initControllers() {
-    this.tableController_Search = new Search(this.mountPoint, this);
-    this.tableController_Search.on('renderNewData', this);
+    this.searchComponent = new Search(this.mountPoint, this.data);
+    this.searchComponent.on('renderNewData', this);
   }
 }
