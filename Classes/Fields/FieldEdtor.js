@@ -40,6 +40,10 @@ export class FieldEditor extends BaseComponent {
     }
   }
 
+  // wasInputUpdated() {
+  //   return this.value === this.inputElement.value;
+  // }
+
   createEditFieldContainer() {
     const propContainer = createDOMElement('div', undefined, 'editing-field');
     const btnContainer = this.createBtnGroup()
@@ -50,15 +54,13 @@ export class FieldEditor extends BaseComponent {
   createBtnGroup() {
     const btnContainer = createDOMElement('div');
 
-    const saveBtn = createDOMElement('button', 'Save', 'button', {action: 'saveChanges'});
-    saveBtn.addEventListener('click', this);
-    this.saveBtn = saveBtn;
+    this.saveBtn = createDOMElement('button', 'Save', 'button', {action: 'saveChanges'});
+    this.saveBtn.addEventListener('click', this);
 
-    const discardBtn = createDOMElement('button', 'Discard', 'button', {action: 'discardChanges'});
-    discardBtn.addEventListener('click', this);
-    this.discardBtn = discardBtn;
+    this.discardBtn = createDOMElement('button', 'Discard', 'button', {action: 'discardChanges'});
+    this.discardBtn.addEventListener('click', this);
 
-    btnContainer.append(saveBtn, discardBtn);
+    btnContainer.append(this.saveBtn, this.discardBtn);
 
     return btnContainer;
   }
@@ -75,9 +77,8 @@ export class FieldEditorText extends FieldEditor {
 
   createEditFieldInput(type, value) {
     const container = this.createEditFieldContainer();
-    const inputElement = this.createInputElement(type, value);
-    container.prepend(inputElement);
-    this.inputElement = inputElement;
+    this.inputElement = this.createInputElement(type, value);
+    container.prepend(this.inputElement);
     return container;
   }
 
@@ -101,10 +102,9 @@ export class FieldEditorTextarea extends FieldEditor {
 
   createEditFieldTextarea() {
     const container = this.createEditFieldContainer();
-    const textarea = createDOMElement('textarea', undefined, 'form__textarea');
-    textarea.value = this.value;
-    this.inputElement = textarea;
-    container.prepend(textarea);
+    this.inputElement = createDOMElement('textarea', undefined, 'form__textarea');
+    this.inputElement = this.value;
+    container.prepend(this.inputElement);
     return container;
   }
 }

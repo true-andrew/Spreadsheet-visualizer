@@ -99,6 +99,38 @@ const documents = [
   ]
 ];
 
+const users = [
+  [
+    {
+      type: 'header',
+      value: 'Username'
+    },
+    {
+      type: 'header',
+      value: 'Registration date'
+    },
+    {
+      type: 'header',
+      value: 'Description'
+    }
+  ],
+  [
+    {
+      type: 'text',
+      value: 'Username'
+    },
+    {
+      type: 'date',
+      value: '18.04.2021'
+    },
+    {
+      type: 'textarea',
+      value: 'about...',
+    },
+  ],
+  []
+]
+
 function addIdToData(data) {
   for (let i = 0, len = data.length; i < len; i++) {
     const row = data[i];

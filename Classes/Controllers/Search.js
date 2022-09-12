@@ -29,13 +29,12 @@ export class Search extends BaseComponent {
   }
 
   initContainer() {
-    const container = createDOMElement('div');
+    this.container = createDOMElement('div');
     const inputElement = createDOMElement('input');
     inputElement.placeholder = 'Search';
     inputElement.addEventListener('keypress', this);
     this.selectColumnElement = this.createSelector();
-    container.append(inputElement, this.selectColumnElement);
-    this.container = container;
+    this.container.append(inputElement, this.selectColumnElement);
   }
 
   createSelector() {
@@ -67,6 +66,7 @@ export class Search extends BaseComponent {
     this.emit('renderNewData', filteredData);
   }
 
+  //TODO попробовать упростить
   checkAllColumns(filteredData, searchValue) {
     for (let i = 1, len = this.data.length; i < len; i++) {
       const row = this.data[i];

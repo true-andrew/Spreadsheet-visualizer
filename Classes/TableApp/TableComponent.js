@@ -34,6 +34,11 @@ export class TableComponent extends BaseComponent {
     this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
   }
 
+  initControllers() {
+    this.searchComponent = new Search(this.mountPoint, this.data);
+    this.searchComponent.on('renderNewData', this);
+  }
+
   sortData(colNumber) {
     console.log('sort table');
     this.sortOrder = !this.sortOrder;
@@ -47,8 +52,7 @@ export class TableComponent extends BaseComponent {
     this.data[data.idRow][data.idCol].value = data.newValue;
   }
 
-  initControllers() {
-    this.searchComponent = new Search(this.mountPoint, this.data);
-    this.searchComponent.on('renderNewData', this);
+  dataSourceSelector() {
+
   }
 }
