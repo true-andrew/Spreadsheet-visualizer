@@ -25,8 +25,8 @@ export class TableController extends BaseComponent {
     this.tableController_Search.on('renderNewData', this.tableApp);
   }
 
-  saveChanges(data) {
-    console.log('saving changes');
-    this.tableApp.data[data.idRow][data.idCol].value = data.newValue;
-  }
+  // saveChanges(data) {
+  //   console.log('saving changes');
+  //   this.tableComponent.data[data.idRow][data.idCol].value = data.newValue;
+  // }
 }

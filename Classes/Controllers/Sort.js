@@ -10,7 +10,7 @@ export class Sort extends BaseComponent {
 
   tableApp;
   sortOrder = true;
-  reset = false;
+  reset = true;
 
   handleEvent(e) {
     if (e.type === 'click') {
@@ -36,12 +36,5 @@ export class Sort extends BaseComponent {
     this.container.append(sortButton);
   }
 
-  sortData(colNumber) {
-    console.log('sort table');
-    this.reset = false;
-    this.sortOrder = !this.sortOrder;
-    const sortData = [].concat(this.tableApp.data);
-    insertSort(sortData, this.sortOrder, colNumber);
-    this.emit('renderNewData', sortData);
-  }
+
 }

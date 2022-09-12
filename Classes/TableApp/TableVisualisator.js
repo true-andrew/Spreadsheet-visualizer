@@ -5,17 +5,17 @@ import {HeaderField} from "../Fields/HeaderField.js";
 import {UserField} from "../Fields/UserField.js";
 
 export class TableVisualisator extends BaseComponent {
-  constructor(mountPoint, tableApp) {
+  constructor(mountPoint, tableComponent) {
     super(mountPoint);
-    this.tableApp = tableApp;
+    this.tableComponent = tableComponent;
     this.init();
   }
 
-  tableApp;
+  tableComponent;
 
   init() {
     super.init();
-    this.generateCells(this.tableApp.data);
+    this.generateCells(this.tableComponent.data);
   }
 
   initContainer() {
@@ -32,7 +32,7 @@ export class TableVisualisator extends BaseComponent {
 
       for (let j = 0, len = fields.length; j < len; j++) {
         const field = fields[j];
-        createField(row, field, this.tableApp);
+        createField(row, field, this.tableComponent);
       }
 
       this.container.append(row);

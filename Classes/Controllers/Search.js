@@ -65,6 +65,7 @@ export class Search extends BaseComponent {
     }
 
     this.tableApp.handleEvent('renderNewData', filteredData);
+    // this.emit('renderNewData', filteredData);
   }
 
   checkAllColumns(filteredData, searchValue) {
