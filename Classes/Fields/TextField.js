@@ -1,6 +1,6 @@
 import {createDOMElement} from "../../helper.js";
 import {
-  FieldEditText,
+  FieldEditorText,
   FieldEditorTextarea
 } from "./FieldEdtor.js";
 import {DatePicker} from "../Datepicker/DatePicker.js";
@@ -49,6 +49,7 @@ export class TextField extends BaseComponent {
     this.container.textContent = '';
     this.removeEventListeners();
     const editingField = createEditField(this);
+    //сделать event emitter не с handleEvent, а с функциями
     editingField.on('endEdit', this);
   }
 
@@ -65,8 +66,8 @@ export class TextField extends BaseComponent {
 }
 
 const options = {
-  'number': FieldEditText,
-  'text': FieldEditText,
+  'number': FieldEditorText,
+  'text': FieldEditorText,
   'textarea': FieldEditorTextarea,
   'date': DatePicker
 }
