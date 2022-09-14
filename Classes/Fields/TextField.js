@@ -74,5 +74,5 @@ const options = {
 
 function createEditField(field) {
   const targetClass = options[field.type];
-  return new targetClass(field.container, field);
+  return new targetClass(field.container, field.value, field.type);
 }

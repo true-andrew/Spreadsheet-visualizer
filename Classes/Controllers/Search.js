@@ -28,13 +28,22 @@ export class Search extends BaseComponent {
     }
   }
 
+  updateData(data) {
+    this.data = data;
+    return this;
+  }
+
   initContainer() {
     this.container = createDOMElement('div');
+    this.initSearchField();
+  }
+
+  initSearchField() {
     const inputElement = createDOMElement('input');
     inputElement.placeholder = 'Search';
     inputElement.addEventListener('keypress', this);
     this.selectColumnElement = this.createSelector();
-    this.container.append(inputElement, this.selectColumnElement);
+    this.container.replaceChildren(inputElement, this.selectColumnElement);
   }
 
   createSelector() {

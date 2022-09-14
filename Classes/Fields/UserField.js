@@ -20,6 +20,14 @@ export class UserField extends BaseComponent {
     }
   }
 
+  initContainer() {
+    this.container = createDOMElement('td', this.value);
+  }
+
+  initEventListeners() {
+    this.container.addEventListener('mouseenter', this);
+  }
+
   showPopUp(e) {
     this.createUserCard();
     this.setUserCardPosition(e);
@@ -49,13 +57,5 @@ export class UserField extends BaseComponent {
     this.user.style.position = 'absolute';
     this.user.style.top = e.clientY;
     this.user.style.left = e.clientX;
-  }
-
-  initContainer() {
-    this.container = createDOMElement('td', this.value);
-  }
-
-  initEventListeners() {
-    this.container.addEventListener('mouseenter', this);
   }
 }

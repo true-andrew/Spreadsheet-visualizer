@@ -117,7 +117,21 @@ const users = [
   [
     {
       type: 'text',
-      value: 'Username'
+      value: 'Name'
+    },
+    {
+      type: 'date',
+      value: '06.05.2018'
+    },
+    {
+      type: 'textarea',
+      value: 'about...',
+    },
+  ],
+  [
+    {
+      type: 'text',
+      value: 'Name'
     },
     {
       type: 'date',
@@ -125,10 +139,23 @@ const users = [
     },
     {
       type: 'textarea',
-      value: 'about...',
+      value: 'developer',
     },
   ],
-  []
+  [
+    {
+      type: 'text',
+      value: 'Name'
+    },
+    {
+      type: 'date',
+      value: '23.12.2019'
+    },
+    {
+      type: 'textarea',
+      value: 'manager',
+    },
+  ],
 ]
 
 function addIdToData(data) {
@@ -142,5 +169,12 @@ function addIdToData(data) {
 }
 
 addIdToData(documents);
+addIdToData(users);
 
-export {documents};
+const doc = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(documents);
+  }, 1000);
+});
+
+export {documents, users};

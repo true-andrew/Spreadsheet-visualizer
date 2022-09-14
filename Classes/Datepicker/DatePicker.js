@@ -4,10 +4,13 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
-  constructor(mountPoint, field) {
+  constructor(mountPoint, inputData) {
     super(mountPoint);
-    this.field = field;
+    this.displayedDate = new Date();
     this.init();
+    if (inputData) {
+      this.setInitDate(inputData);
+    }
   }
 
   //elements
@@ -29,15 +32,13 @@ export class DatePicker extends BaseComponent {
   regExIsNotNumber = /\D/;
 
   init() {
-    this.mountPoint.classList.add('date-picker');
-    this.displayedDate = new Date();
     super.init();
-    this.setInitDate();
+    this.mountPoint.classList.add('date-picker');
     this.show();
   }
 
-  setInitDate() {
-    const date = this.field.value.split('.').reverse().join('-');
+  setInitDate(inputDate) {
+    const date = inputDate.split('.').reverse().join('-');
     this.setDate(date);
   }
 
@@ -121,6 +122,7 @@ export class DatePicker extends BaseComponent {
   }
 
   show() {
+    this.inputElement.focus();
     this.calendar.style.display = 'block';
   }
 

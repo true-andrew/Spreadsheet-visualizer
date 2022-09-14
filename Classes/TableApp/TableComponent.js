@@ -1,17 +1,21 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {TableVisualisator} from "./TableVisualisator.js";
-import {insertSort} from "../../helper.js";
+import {createDOMElement, insertSort} from "../../helper.js";
 import {Search} from "../Controllers/Search.js";
+import {DataSelector} from "../Controllers/DataSelector.js";
 
 export class TableComponent extends BaseComponent {
-  constructor(id, data) {
+  constructor(id, data, dataArr) {
     super(document.getElementById(id));
+    this.datasets = dataArr;
     this.data = data;
     this.init();
   }
 
+  datasets;
   data;
   tableVisualisator;
+  dataSelectorComponent
   sortOrder = false;
   searchComponent;
 
@@ -21,21 +25,28 @@ export class TableComponent extends BaseComponent {
     } else if (e === 'sortData') {
       this.sortData(data);
     } else if (e === 'renderNewData') {
-      this.tableVisualisator.generateCells(data);
-    } else if (e === 'editField') {
-      data.edit();
+      this.renderData(data);
+    } else if (e === 'selectNewData') {
+      this.changeDataSource(data);
     } else {
       throw new Error(`Unhandled Event: ${e}`);
     }
   }
 
-  init() {
-    this.initControllers();
-    this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
+  initContainer() {
+    this.container = createDOMElement('div', undefined, 'controllers');
   }
 
-  initControllers() {
-    this.searchComponent = new Search(this.mountPoint, this.data);
+  init() {
+    super.init();
+    this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
+    this.dataSelectorComponent = new DataSelector(this.container, this.datasets);
+    this.dataSelectorComponent.on('selectNewData', this);
+    this.initSearch();
+  }
+
+  initSearch() {
+    this.searchComponent = new Search(this.container, this.data);
     this.searchComponent.on('renderNewData', this);
   }
 
@@ -44,7 +55,7 @@ export class TableComponent extends BaseComponent {
     this.sortOrder = !this.sortOrder;
     const sortData = [].concat(this.data);
     insertSort(sortData, this.sortOrder, colNumber);
-    this.tableVisualisator.generateCells(sortData);
+    this.renderData(sortData);
   }
 
   saveChanges(data) {
@@ -52,7 +63,13 @@ export class TableComponent extends BaseComponent {
     this.data[data.idRow][data.idCol].value = data.newValue;
   }
 
-  dataSourceSelector() {
+  renderData(data) {
+    this.tableVisualisator.generateCells(data);
+  }
 
+  changeDataSource(data) {
+    this.data = data;
+    this.searchComponent.updateData(data).initSearchField();
+    this.renderData(data);
   }
 }

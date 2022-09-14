@@ -3,10 +3,10 @@ import {BaseComponent} from "../BaseComponent.js";
 
 
 export class FieldEditor extends BaseComponent {
-  constructor(mountPoint, field) {
+  constructor(mountPoint, value, type) {
     super(mountPoint);
-    this.type = field.type;
-    this.value = field.value;
+    this.type = type;
+    this.value = value;
     this.init();
   }
 
@@ -103,7 +103,7 @@ export class FieldEditorTextarea extends FieldEditor {
   createEditFieldTextarea() {
     const container = this.createEditFieldContainer();
     this.inputElement = createDOMElement('textarea', undefined, 'form__textarea');
-    this.inputElement = this.value;
+    this.inputElement.value = this.value;
     container.prepend(this.inputElement);
     return container;
   }

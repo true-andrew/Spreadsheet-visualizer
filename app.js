@@ -1,4 +1,4 @@
-import {documents} from "./data.js";
+import {documents, users} from "./data.js";
 import {TableComponent} from "./Classes/TableApp/TableComponent.js";
 
-const table = new TableComponent('table_component', documents);
+const table = new TableComponent('table_component', documents,{documents, users});
