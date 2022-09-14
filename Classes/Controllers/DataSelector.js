@@ -13,7 +13,7 @@ export class DataSelector extends BaseComponent {
   }
 
   initContainer() {
-    this.container = createDOMElement('div');
+    this.container = createDOMElement('div', undefined, 'controller');
     const label = createDOMElement('label', 'Select source of Data');
     const dataSelector = this.createDataSelector();
     this.container.append(label, dataSelector);

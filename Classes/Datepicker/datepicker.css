@@ -4,10 +4,17 @@ DATEPICKER
 
 .date-picker {
     position: relative;
-    margin: 30px auto;
+    z-index: 100;
+    /*margin: 30px auto;*/
     background-color: #FFF;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     user-select: none;
+}
+
+.date-picker > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .date-picker .selected-date {

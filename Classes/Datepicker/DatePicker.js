@@ -4,13 +4,10 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
-  constructor(mountPoint, inputData) {
+  constructor(mountPoint) {
     super(mountPoint);
     this.displayedDate = new Date();
     this.init();
-    if (inputData) {
-      this.setInitDate(inputData);
-    }
   }
 
   //elements
@@ -23,24 +20,13 @@ export class DatePicker extends BaseComponent {
   daysElement;
   todayBtn;
   //data
-  displayedDate = undefined;
-  selectedDate = undefined;
-  viewMode = undefined;
+  displayedDate;
+  selectedDate;
+  viewMode;
   //regexp
   regExDelete = /delete/;
   regExIsNumber = /\d/;
   regExIsNotNumber = /\D/;
-
-  init() {
-    super.init();
-    this.mountPoint.classList.add('date-picker');
-    this.show();
-  }
-
-  setInitDate(inputDate) {
-    const date = inputDate.split('.').reverse().join('-');
-    this.setDate(date);
-  }
 
   handleEvent(ev) {
     const eventName = 'handleEvent_' + ev.type;
@@ -53,13 +39,13 @@ export class DatePicker extends BaseComponent {
 
   initContainer() {
     this.container = createEl('div');
-    this.inputElement = createEl('input', 'selected-date', '', {
+    this.inputElement = createEl('input', 'selected-date', undefined, {
       type: 'text',
       placeholder: 'DD.MM.YYYY',
       maxLength: 11,
     });
 
-    this.calendar = createEl('div', 'calendar', '', {tabIndex: -1});
+    this.calendar = createEl('div', 'calendar', undefined, {tabIndex: -1});
 
     const monthHeader = createEl('div', 'month-header');
     this.prevMonthElement = createEl('div', 'arrows prev', '<');
@@ -101,10 +87,7 @@ export class DatePicker extends BaseComponent {
     if ((ev.relatedTarget === this.calendar) || (ev.relatedTarget === this.todayBtn)) {
       return;
     }
-
     this.hide();
-    this.mountPoint.classList.remove('date-picker');
-    this.emit('endEdit', this.inputElement.value);
   }
 
   handleEvent_focus(ev) {
@@ -122,7 +105,6 @@ export class DatePicker extends BaseComponent {
   }
 
   show() {
-    this.inputElement.focus();
     this.calendar.style.display = 'block';
   }
 
@@ -435,7 +417,7 @@ function getLastDayOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
 
-function formatDate(d) {
+export function formatDate(d) {
   return d.toLocaleString('ru-RU').slice(0, 10);
 }
 

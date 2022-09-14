@@ -34,7 +34,7 @@ export class Search extends BaseComponent {
   }
 
   initContainer() {
-    this.container = createDOMElement('div');
+    this.container = createDOMElement('div', undefined, 'controller');
     this.initSearchField();
   }
 
@@ -75,7 +75,6 @@ export class Search extends BaseComponent {
     this.emit('renderNewData', filteredData);
   }
 
-  //TODO попробовать упростить
   checkAllColumns(filteredData, searchValue) {
     for (let i = 1, len = this.data.length; i < len; i++) {
       const row = this.data[i];

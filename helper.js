@@ -36,7 +36,7 @@ function compare(first, second) {
   return a < b;
 }
 
-function dateToNumber(date) {
+export function dateToNumber(date) {
   return Date.parse(date.split('.').reverse().join('-'));
 }
 

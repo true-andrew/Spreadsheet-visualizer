@@ -29,7 +29,6 @@ textarea {
 
 .table {
     width: 100%;
-    margin-top: 15px;
     border-collapse: collapse;
 }
 
@@ -93,8 +92,10 @@ textarea {
     outline: none;
 }
 
-.controllers div {
+.controller {
+    width: 100%;
     padding: 12px 5px;
+    box-sizing: border-box;
     border-bottom: 1px solid black;
     display: flex;
     justify-content: space-evenly;

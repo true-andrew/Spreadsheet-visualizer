@@ -1,23 +1,13 @@
 import {EventEmitter} from "./EventEmitter.js";
 
 export class BaseComponent extends EventEmitter {
-  constructor(container) {
+  constructor(mountPoint) {
     super();
-    this.mountPoint = container;
-    // this.registerOptions(options);
-    // this.init();
+    this.mountPoint = mountPoint;
   }
 
   container = undefined;
   mountPoint = undefined;
-
-  registerOptions(options) {
-    const optionsKeys = Object.keys(options);
-    for (let i = 0, len = optionsKeys.length; i < len; i++) {
-      const optionName = optionsKeys[i];
-      this[optionName] = options[optionName];
-    }
-  }
 
   init() {
     if (!this.mountPoint instanceof HTMLElement) {
@@ -34,5 +24,9 @@ export class BaseComponent extends EventEmitter {
 
   render() {
     this.mountPoint.append(this.container);
+  }
+
+  remove() {
+    this.container.remove();
   }
 }
