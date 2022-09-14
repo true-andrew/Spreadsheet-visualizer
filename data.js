@@ -171,10 +171,20 @@ function addIdToData(data) {
 addIdToData(documents);
 addIdToData(users);
 
-const doc = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve(documents);
-  }, 1000);
-});
+const doc = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(documents);
+    }, 3000);
+  })
+};
 
-export {documents, users};
+const us = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(users);
+    }, 1500);
+  })
+};
+
+export {doc, us};

@@ -94,6 +94,7 @@ textarea {
 
 .controller {
     width: 100%;
+    min-width: 400px;
     padding: 12px 5px;
     box-sizing: border-box;
     border-bottom: 1px solid black;

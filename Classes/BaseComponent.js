@@ -25,8 +25,4 @@ export class BaseComponent extends EventEmitter {
   render() {
     this.mountPoint.append(this.container);
   }
-
-  remove() {
-    this.container.remove();
-  }
 }

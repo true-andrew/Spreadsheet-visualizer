@@ -6,10 +6,10 @@ import {DataSelector} from "../Controllers/DataSelector.js";
 import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
 
 export class TableComponent extends BaseComponent {
-  constructor(id, data, dataArr) {
+  constructor(id, dataArr) {
     super(document.getElementById(id));
     this.datasets = dataArr;
-    this.data = data;
+    // this.data = dataArr['documents'];
     this.initDataSelector();
     this.init();
   }
@@ -43,7 +43,7 @@ export class TableComponent extends BaseComponent {
 
   init() {
     super.init();
-    this.initControllers();
+    // this.initControllers();
     this.initTableVisualisator();
   }
 

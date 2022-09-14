@@ -22,6 +22,10 @@ export class DataSelector extends BaseComponent {
   createDataSelector() {
     const dataSelector = createDOMElement('select');
 
+    const firstValue = createDOMElement('option', '---');
+    firstValue.value = null;
+    dataSelector.append(firstValue);
+
     const keys = Object.keys(this.datasets);
     for (let i = 0, len = keys.length; i < len; i++) {
       const option = createDOMElement('option', keys[i]);
@@ -35,6 +39,11 @@ export class DataSelector extends BaseComponent {
 
   selectDataObject(e) {
     const dataName = e.target.value;
-    this.emit('selectNewData', this.datasets[dataName]);
+    if (dataName === 'null') {
+      return;
+    }
+    this.datasets[dataName]().then((res) => {
+      this.emit('selectNewData', res);
+    })
   }
 }

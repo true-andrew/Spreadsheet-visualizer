@@ -15,7 +15,7 @@ export class TableVisualisator extends BaseComponent {
 
   init() {
     super.init();
-    this.generateCells(this.tableComponent.data);
+    // this.generateCells(this.tableComponent.data);
   }
 
   initContainer() {
