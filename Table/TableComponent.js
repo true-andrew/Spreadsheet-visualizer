@@ -12,20 +12,9 @@ export class TableComponent extends BaseComponent {
       mountPoint: data.mountPoint,
       getData: data.getData,
     });
-    // this.init(mountPoint, getData);
   }
 
-  // datasets;
-  // data;
-  // tableVisualisator;
-  // dataSelectorComponent
-  // searchComponent;
-  // searchRangeComponent;
-  // mountPoint
-  // loader;
-
   init() {
-    // this.mountPoint = mountPoint;
     this.loader = createDOMElement('div', undefined, 'loader');
     this.mountPoint.append(this.loader);
     this.getData().then(res => {

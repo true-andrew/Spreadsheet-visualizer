@@ -13,11 +13,9 @@ export class TableDataModel {
 
   data;
   initialData;
-  appliedFilters = [];
   sortOrder = false;
 
   setFilter(filter, data) {
-    // this.appliedFilters.push(filter);
     if (filter === 'sort') {
       this.sort(data)
     } else if (filter === 'search') {
