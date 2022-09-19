@@ -1,23 +1,26 @@
 import {BaseComponent} from "../BaseComponent.js";
-import {createDOMElement} from "../../helper.js";
-import {DataModel} from "../DataModel.js";
+import {createDOMElement} from "../helper.js";
+import {TableDataModel} from "../Table/TableDataModel.js";
 
 export class DataSelector extends BaseComponent {
-  constructor(tableComponent) {
-    super(tableComponent.mountPoint);
-    this.tableComponent = tableComponent;
-    this.init();
+  constructor(options) {
+    super({
+      mountPoint: options.tableComponent.mountPoint,
+      tableComponent: options.tableComponent,
+    });
+    // this.tableComponent = data;
+    // this.init();
   }
 
   handleEvent(e) {
     this.selectDataObject(e.target.value);
   }
 
-  initContainer() {
-    this.container = createDOMElement('div', undefined, 'controller');
+  createDomElements() {
+    this.domComponent = createDOMElement('div', undefined, 'controller');
     const label = createDOMElement('label', 'Select source of Data');
     const dataSelector = this.createDataSelector();
-    this.container.append(label, dataSelector);
+    this.domComponent.append(label, dataSelector);
   }
 
   createDataSelector() {
@@ -26,7 +29,7 @@ export class DataSelector extends BaseComponent {
     const keys = Object.keys(this.tableComponent.datasets);
     for (let i = 0, len = keys.length; i < len; i++) {
       if (i === 0) {
-        this.tableComponent.dataModel = new DataModel(this.tableComponent.datasets[keys[i]]);
+        this.tableComponent.dataModel = new TableDataModel(this.tableComponent.datasets[keys[i]]);
         this.tableComponent.data = this.tableComponent.dataModel.getValues();
       }
       const option = createDOMElement('option', keys[i]);

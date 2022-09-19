@@ -1,9 +1,9 @@
 import {DatePicker, formatDate} from "./DatePicker.js";
-import {createDOMElement} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 
 export class DatePickerRange extends DatePicker {
-  constructor(mountPoint) {
-    super(mountPoint);
+  constructor(options) {
+    super({mountPoint: options.mountPoint});
   }
 
   startDate;
@@ -19,7 +19,7 @@ export class DatePickerRange extends DatePicker {
       action: 'resetRange',
     });
     resetBtn.addEventListener('click', this);
-    this.container.append(resetBtn)
+    this.domComponent.append(resetBtn)
   }
 
   hide() {
@@ -33,7 +33,7 @@ export class DatePickerRange extends DatePicker {
 
   resetRange(e) {
     if (this.inputElement.value.length) {
-      this.container.dispatchEvent(new CustomEvent('selectRange'));
+      this.domComponent.dispatchEvent(new CustomEvent('selectRange'));
     }
     this.inputElement.value = '';
     this.hide();
@@ -77,7 +77,7 @@ export class DatePickerRange extends DatePicker {
       this.reverseRange();
     }
 
-    this.container.dispatchEvent(new CustomEvent('selectRange', {
+    this.domComponent.dispatchEvent(new CustomEvent('selectRange', {
       detail: {
         start: this.startDate.valueOf(),
         end: this.endDate.valueOf(),

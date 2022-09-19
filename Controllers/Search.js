@@ -1,12 +1,15 @@
-import {createDOMElement} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 export class Search extends BaseComponent {
-  constructor(mountPoint, tableComponent) {
-    super(mountPoint);
-    this.tableComponent = tableComponent;
+  constructor(options) {
+    super({
+      mountPoint: options.mountPoint,
+      tableComponent: options.tableComponent,
+    });
+    // this.tableComponent = tableComponent;
     // this.data = data;
-    this.init();
+    // this.init();
   }
 
   searchInputValue = '';
@@ -30,8 +33,8 @@ export class Search extends BaseComponent {
     }
   }
 
-  initContainer() {
-    this.container = createDOMElement('div', undefined, 'controller');
+  createDomElements() {
+    this.domComponent = createDOMElement('div', undefined, 'controller');
     this.initSearchField();
   }
 
@@ -40,7 +43,7 @@ export class Search extends BaseComponent {
     inputElement.placeholder = 'Search';
     inputElement.addEventListener('keypress', this);
     this.selectColumnElement = this.createSelector();
-    this.container.replaceChildren(inputElement, this.selectColumnElement);
+    this.domComponent.replaceChildren(inputElement, this.selectColumnElement);
   }
 
   createSelector() {

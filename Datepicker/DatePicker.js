@@ -4,25 +4,28 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
-  constructor(mountPoint) {
-    super(mountPoint);
-    this.displayedDate = new Date();
-    this.init();
+  constructor(options) {
+    super({
+      mountPoint: options.mountPoint,
+      displayedDate: new Date()
+    });
+    // this.displayedDate = new Date();
+    // this.init();
   }
 
   //elements
-  calendar;
-  inputElement;
-  prevMonthElement;
-  nextMonthElement;
-  monthElement;
-  weekDays;
-  daysElement;
-  todayBtn;
+  // calendar;
+  // inputElement;
+  // prevMonthElement;
+  // nextMonthElement;
+  // monthElement;
+  // weekDays;
+  // daysElement;
+  // todayBtn;
   //data
-  displayedDate;
-  selectedDate;
-  viewMode;
+  // displayedDate;
+  // selectedDate;
+  // viewMode;
   //regexp
   regExDelete = /delete/;
   regExIsNumber = /\d/;
@@ -37,8 +40,8 @@ export class DatePicker extends BaseComponent {
     }
   }
 
-  initContainer() {
-    this.container = createEl('div');
+  createDomElements() {
+    this.domComponent = createEl('div');
     this.inputElement = createEl('input', 'selected-date', undefined, {
       type: 'text',
       placeholder: 'DD.MM.YYYY',
@@ -71,12 +74,12 @@ export class DatePicker extends BaseComponent {
     });
 
     this.calendar.append(monthHeader, this.weekDays, this.daysElement, this.todayBtn);
-    this.container.append(this.inputElement, this.calendar);
+    this.domComponent.append(this.inputElement, this.calendar);
     this.viewMode = 'days';
     this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
   }
 
-  initEventListeners() {
+  initEvents() {
     this.calendar.addEventListener('click', this);
     this.inputElement.addEventListener('focus', this);
     this.inputElement.addEventListener('blur', this);
@@ -339,6 +342,7 @@ export class DatePicker extends BaseComponent {
 
     this.daysElement.replaceChildren(yearsContainer);
   }
+
   handleEvent_input(ev) {
     if (this.regExDelete.test(ev.inputType)) {
       return;

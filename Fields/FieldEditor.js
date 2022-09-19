@@ -1,19 +1,23 @@
-import {createDOMElement} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 
 
 export class FieldEditor extends BaseComponent {
-  constructor(mountPoint, value, type) {
-    super(mountPoint);
-    this.type = type;
-    this.value = value;
-    this.init();
+  constructor(options) {
+    super({
+      mountPoint: options.field.domComponent,
+      type: options.field.type,
+      value: options.field.value,
+    });
+    // this.type = type;
+    // this.value = value;
+    // this.init();
   }
 
-  container;
-  inputElement;
-  saveBtn;
-  discardBtn;
+  // domComponent;
+  // inputElement;
+  // saveBtn;
+  // discardBtn;
 
   handleEvent(e) {
     const event = 'handleEvent_' + e.type;
@@ -31,12 +35,12 @@ export class FieldEditor extends BaseComponent {
     } else if (e.target === this.discardBtn) {
       outputValue = this.value;
     }
-    this.container.dispatchEvent(new CustomEvent('endEdit', {detail: outputValue}));
+    this.domComponent.dispatchEvent(new CustomEvent('endEdit', {detail: outputValue}));
   }
 
   handleEvent_keypress(e) {
     if (e.key === 'Enter') {
-      this.container.dispatchEvent(new CustomEvent('endEdit', {detail: this.inputElement.value}));
+      this.domComponent.dispatchEvent(new CustomEvent('endEdit', {detail: this.inputElement.value}));
     }
   }
 
@@ -63,12 +67,8 @@ export class FieldEditor extends BaseComponent {
 }
 
 export class FieldEditorText extends FieldEditor {
-  constructor(mountPoint, field) {
-    super(mountPoint, field);
-  }
-
-  initContainer() {
-    this.container = this.createEditFieldInput(this.type, this.value);
+  createDomElements() {
+    this.domComponent = this.createEditFieldInput(this.type, this.value);
   }
 
   createEditFieldInput(type, value) {
@@ -88,12 +88,8 @@ export class FieldEditorText extends FieldEditor {
 }
 
 export class FieldEditorTextarea extends FieldEditor {
-  constructor(mountPoint, field) {
-    super(mountPoint, field);
-  }
-
-  initContainer() {
-    this.container = this.createEditFieldTextarea();
+  createDomElements() {
+    this.domComponent = this.createEditFieldTextarea();
   }
 
   createEditFieldTextarea() {

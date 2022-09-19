@@ -1,13 +1,18 @@
 import {BaseComponent} from "../BaseComponent.js";
-import {createDOMElement} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 
 export class UserField extends BaseComponent {
-  constructor(mountPoint, field) {
-    super(mountPoint);
-    this.type = field.type;
-    this.value = field.value;
-    this.additional = field.additional;
-    this.init();
+  constructor(options) {
+    super({
+      mountPoint: options.mountPoint,
+      type: options.field.type,
+      value: options.field.value,
+      additional: options.field.additional,
+    });
+    // this.type = field.type;
+    // this.value = field.value;
+    // this.additional = field.additional;
+    // this.init();
   }
 
   user;
@@ -20,20 +25,20 @@ export class UserField extends BaseComponent {
     }
   }
 
-  initContainer() {
-    this.container = createDOMElement('td', this.value);
-    this.container.style.position = 'relative';
+  createDomElements() {
+    this.domComponent = createDOMElement('td', this.value);
+    this.domComponent.style.position = 'relative';
   }
 
-  initEventListeners() {
-    this.container.addEventListener('mouseenter', this);
-    this.container.addEventListener('mouseleave', this);
+  initEvents() {
+    this.domComponent.addEventListener('mouseenter', this);
+    this.domComponent.addEventListener('mouseleave', this);
   }
 
   showPopUp(e) {
     this.createUserCard();
     this.setUserCardPosition(e);
-    this.container.append(this.user);
+    this.domComponent.append(this.user);
   }
 
   hidePopUp() {
@@ -59,6 +64,6 @@ export class UserField extends BaseComponent {
     this.user.style.position = 'absolute';
     this.user.style.zIndex = "100";
     this.user.style.top = "0";
-    this.user.style.left = this.container.offsetWidth + 'px';
+    this.user.style.left = this.domComponent.offsetWidth + 'px';
   }
 }

@@ -1,6 +1,6 @@
 import {dateToNumber, insertSort} from "../helper.js";
 
-export class DataModel {
+export class TableDataModel {
   constructor(data) {
     this.init(data);
   }
@@ -17,7 +17,7 @@ export class DataModel {
   sortOrder = false;
 
   setFilter(filter, data) {
-    this.appliedFilters.push(filter);
+    // this.appliedFilters.push(filter);
     if (filter === 'sort') {
       this.sort(data)
     } else if (filter === 'search') {
@@ -40,10 +40,18 @@ export class DataModel {
   }
 
   saveChanges(data) {
-    console.log('saving changes');
     this.initialData[data.idRow][data.idCol].value = data.newValue;
     this.data = this.initialData;
     return this;
+  }
+
+  iterateAllElems() {
+    for (let i = 1, len = this.data.length; i < len; i++) {
+      const row = this.data[i];
+      for (let j = 0, len = row.length; j < len; j++) {
+        const elem = row[j];
+      }
+    }
   }
 
   searchDateRange(data) {

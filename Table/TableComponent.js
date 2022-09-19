@@ -1,52 +1,54 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {TableVisualisator} from "./TableVisualisator.js";
-import {createDOMElement, dateToNumber, insertSort} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 import {Search} from "../Controllers/Search.js";
 import {DataSelector} from "../Controllers/DataSelector.js";
-import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
-import {DataModel} from "../DataModel.js";
+import {TableDataModel} from "./TableDataModel.js";
 import {SearchRange} from "../Controllers/SearchRange.js";
 
-export class TableComponent {
-  constructor(mountPoint, getData) {
-    this.init(mountPoint, getData);
+export class TableComponent extends BaseComponent {
+  constructor(data) {
+    super({
+      mountPoint: data.mountPoint,
+      getData: data.getData,
+    });
+    // this.init(mountPoint, getData);
   }
 
-  datasets;
-  data;
-  tableVisualisator;
-  dataSelectorComponent
-  searchComponent;
-  searchRangeComponent;
-  mountPoint
-  loader;
+  // datasets;
+  // data;
+  // tableVisualisator;
+  // dataSelectorComponent
+  // searchComponent;
+  // searchRangeComponent;
+  // mountPoint
+  // loader;
 
-  init(mountPoint, getData) {
-    this.mountPoint = mountPoint;
+  init() {
+    // this.mountPoint = mountPoint;
     this.loader = createDOMElement('div', undefined, 'loader');
     this.mountPoint.append(this.loader);
-    getData().then(res => {
+    this.getData().then(res => {
       this.loader.remove();
       this.datasets = res;
-      this.dataSelectorComponent = new DataSelector(this);
-      this.initContainer();
+      this.dataSelectorComponent = new DataSelector({tableComponent: this});
+      this.createDomElements();
       this.render();
     });
   }
 
-  initContainer() {
-    this.container = createDOMElement('div');
+  createDomElements() {
+    this.domComponent = createDOMElement('div');
     this.controllersContainer = createDOMElement('div', undefined, 'controllers');
-    this.container.append(this.controllersContainer);
-    this.searchComponent = new Search(this.controllersContainer, this);
-    this.searchRangeComponent = new SearchRange(this.controllersContainer, this);
-    this.tableVisualisator = new TableVisualisator(this.container, this);
+    this.searchComponent = new Search({mountPoint: this.controllersContainer, tableComponent: this});
+    this.searchRangeComponent = new SearchRange({mountPoint: this.controllersContainer, tableComponent: this});
+    this.tableVisualisator = new TableVisualisator({tableComponent: this});
     this.tableVisualisator.generateCells(this.data);
   }
 
   render() {
-    this.container.replaceChildren(this.controllersContainer, this.tableVisualisator.container);
-    this.mountPoint.append(this.container);
+    this.domComponent.replaceChildren(this.controllersContainer, this.tableVisualisator.domComponent);
+    this.mountPoint.append(this.domComponent);
   }
 
   sortData(colNumber) {
@@ -79,10 +81,10 @@ export class TableComponent {
   }
 
   changeDataSource(dataName) {
-    this.dataModel = new DataModel(this.datasets[dataName]);
+    this.dataModel = new TableDataModel(this.datasets[dataName]);
     this.data = this.dataModel.getValues();
-    this.container.remove();
-    this.initContainer();
+    this.domComponent.remove();
+    this.createDomElements();
     this.render();
   }
 }

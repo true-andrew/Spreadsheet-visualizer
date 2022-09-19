@@ -178,7 +178,7 @@ function getData() {
         "Documents": documentsArr,
         "Users": usersArr
       });
-    }, Math.random() * 1000 + 1000);
+    }, 0);
   })
 }
 

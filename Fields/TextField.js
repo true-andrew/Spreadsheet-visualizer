@@ -1,4 +1,4 @@
-import {createDOMElement} from "../../helper.js";
+import {createDOMElement} from "../helper.js";
 import {
   FieldEditorText,
   FieldEditorTextarea
@@ -8,21 +8,22 @@ import {DatePickerTextField} from "../Datepicker/DatePickerTextField.js";
 
 
 export class TextField extends BaseComponent {
-  constructor(mountPoint, field, tableComponent) {
-    super(mountPoint);
-    this.tableComponent = tableComponent;
-    this.type = field.type;
-    this.value = field.value;
-    this.idRow = field.idRow;
-    this.idCol = field.idCol;
-    this.init();
+  constructor(options) {
+    super({
+      mountPoint: options.mountPoint,
+      type: options.field.type,
+      value: options.field.value,
+      idRow: options.field.idRow,
+      idCol: options.field.idCol,
+      tableComponent: options.tableComponent
+    });
+    // this.tableComponent = tableComponent;
+    // this.type = field.type;
+    // this.value = field.value;
+    // this.idRow = field.idRow;
+    // this.idCol = field.idCol;
+    // this.init();
   }
-
-  // type;
-  // value;
-  // idRow;
-  // idCol;
-  // tableComponent;
 
   handleEvent(e) {
     if (e.type === 'dblclick') {
@@ -34,35 +35,34 @@ export class TextField extends BaseComponent {
     }
   }
 
-  initContainer() {
-    this.container = createDOMElement('td', this.value);
-    this.container.title = this.type;
+  createDomElements() {
+    this.domComponent = createDOMElement('td', this.value);
+    this.domComponent.title = this.type;
   }
 
-  initEventListeners() {
-    this.container.addEventListener('dblclick', this);
+  initEvents() {
+    this.domComponent.addEventListener('dblclick', this);
   }
 
   removeEventListeners() {
-    this.container.removeEventListener('dblclick', this);
+    this.domComponent.removeEventListener('dblclick', this);
   }
 
   edit() {
-    this.container.textContent = '';
+    this.domComponent.textContent = '';
     this.removeEventListeners();
     const editingField = createEditField(this);
-    editingField.container.addEventListener('endEdit', this);
+    editingField.domComponent.addEventListener('endEdit', this);
   }
 
   saveChanges(newValue) {
-    this.container.textContent = newValue;
+    this.domComponent.textContent = newValue;
     this.value = newValue;
     this.tableComponent.saveChanges({
       idRow: this.idRow,
       idCol: this.idCol,
       newValue
     });
-    // this.initEventListeners();
   }
 }
 
@@ -75,5 +75,5 @@ const options = {
 
 function createEditField(field) {
   const targetClass = options[field.type];
-  return new targetClass(field.container, field.value, field.type);
+  return new targetClass({field});
 }
