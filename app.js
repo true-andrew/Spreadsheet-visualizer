@@ -1,4 +1,6 @@
-import {doc, us} from "./data.js";
+import {getData} from "./data.js";
 import {TableComponent} from "./Classes/TableApp/TableComponent.js";
 
-const table = new TableComponent('table_component', {doc, us});
+
+const container = document.getElementById('table_component');
+const table = new TableComponent(container, getData);

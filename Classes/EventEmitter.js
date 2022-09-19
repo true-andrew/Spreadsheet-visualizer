@@ -8,14 +8,14 @@ export class EventEmitter {
     this.events[eventName].push(handler);
   }
 
-  emit(eventName, data) {
-    const event = this.events[eventName];
-    if (event) {
-      for (let i = 0, len = event.length; i < len; i++) {
-        event[i].handleEvent(eventName, data);
+  emit(event) {
+    const handlers = this.events[event.type];
+    if (handlers) {
+      for (let i = 0, len = handlers.length; i < len; i++) {
+        handlers[i].handleEvent(event);
       }
     } else {
-      throw new Error('Unknown event: ' + eventName);
+      throw new Error('Unknown event: ' + event.type);
     }
   }
 }

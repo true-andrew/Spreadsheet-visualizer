@@ -4,122 +4,85 @@ import {createDOMElement, dateToNumber, insertSort} from "../../helper.js";
 import {Search} from "../Controllers/Search.js";
 import {DataSelector} from "../Controllers/DataSelector.js";
 import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
+import {DataModel} from "../DataModel.js";
+import {SearchRange} from "../Controllers/SearchRange.js";
 
-export class TableComponent extends BaseComponent {
-  constructor(id, dataArr) {
-    super(document.getElementById(id));
-    this.datasets = dataArr;
-    // this.data = dataArr['documents'];
-    this.initDataSelector();
-    this.init();
+export class TableComponent {
+  constructor(mountPoint, getData) {
+    this.init(mountPoint, getData);
   }
 
   datasets;
   data;
   tableVisualisator;
   dataSelectorComponent
-  sortOrder = false;
   searchComponent;
+  searchRangeComponent;
+  mountPoint
+  loader;
 
-  handleEvent(e, data) {
-    if (e === 'saveChanges') {
-      this.saveChanges(data);
-    } else if (e === 'sortData') {
-      this.sortData(data);
-    } else if (e === 'renderNewData') {
-      this.renderData(data);
-    } else if (e === 'selectNewData') {
-      this.changeDataSource(data);
-    } else if (e === 'selectRange') {
-      this.filterDateRange(data);
-    } else {
-      throw new Error(`Unhandled Event: ${e}`);
-    }
+  init(mountPoint, getData) {
+    this.mountPoint = mountPoint;
+    this.loader = createDOMElement('div', undefined, 'loader');
+    this.mountPoint.append(this.loader);
+    getData().then(res => {
+      this.loader.remove();
+      this.datasets = res;
+      this.dataSelectorComponent = new DataSelector(this);
+      this.initContainer();
+      this.render();
+    });
   }
 
   initContainer() {
     this.container = createDOMElement('div');
-  }
-
-  init() {
-    super.init();
-    // this.initControllers();
-    this.initTableVisualisator();
-  }
-
-  initControllers() {
     this.controllersContainer = createDOMElement('div', undefined, 'controllers');
-    this.initSearch();
-    this.initSearchRange();
-    this.container.replaceChildren(this.controllersContainer);
+    this.container.append(this.controllersContainer);
+    this.searchComponent = new Search(this.controllersContainer, this);
+    this.searchRangeComponent = new SearchRange(this.controllersContainer, this);
+    this.tableVisualisator = new TableVisualisator(this.container, this);
+    this.tableVisualisator.generateCells(this.data);
   }
 
-  initTableVisualisator() {
-    this.tableVisualisator = new TableVisualisator(this.mountPoint, this);
-  }
-
-  initDataSelector() {
-    this.dataSelectorComponent = new DataSelector(this.mountPoint, this.datasets);
-    this.dataSelectorComponent.on('selectNewData', this);
-  }
-
-  initSearch() {
-    this.searchComponent = new Search(this.controllersContainer, this.data);
-    this.searchComponent.on('renderNewData', this);
-  }
-
-  initSearchRange() {
-    const controllerContainer = createDOMElement('div', undefined, 'controller');
-    const datepickerContainer = createDOMElement('div');
-    const datePickerRange = new DatePickerRange(datepickerContainer);
-    datePickerRange.on('selectRange', this);
-    controllerContainer.append(datepickerContainer);
-    this.controllersContainer.append(controllerContainer);
+  render() {
+    this.container.replaceChildren(this.controllersContainer, this.tableVisualisator.container);
+    this.mountPoint.append(this.container);
   }
 
   sortData(colNumber) {
-    console.log('sort table');
-    this.sortOrder = !this.sortOrder;
-    const sortData = [].concat(this.data);
-    insertSort(sortData, this.sortOrder, colNumber);
-    this.renderData(sortData);
+    this.dataModel.setFilter('sort', {colNumber});
+    this.data = this.dataModel.getValues();
+    this.renderData(this.data);
+  }
+
+  searchData(searchValue, colNumber) {
+    this.data = this.dataModel.setFilter('search', {
+      searchValue,
+      colNumber
+    }).getValues();
+    this.renderData(this.data);
+  }
+
+  searchDateRange(data) {
+    this.data = this.dataModel.setFilter('searchDateRange', data).getValues();
+    this.renderData(this.data);
   }
 
   saveChanges(data) {
     console.log('saving changes');
-    this.data[data.idRow][data.idCol].value = data.newValue;
+    this.data = this.dataModel.saveChanges(data).getValues();
+    this.renderData(this.data);
   }
 
   renderData(data) {
     this.tableVisualisator.generateCells(data);
   }
 
-  changeDataSource(data) {
-    this.data = data;
-    this.initControllers();
-    this.renderData(data);
-
-  }
-
-  filterDateRange(data) {
-    if (data === undefined) {
-      this.renderData(this.data);
-      return;
-    }
-    const filtered = [];
-
-    filtered.push(this.data[0]);
-
-    for (let i = 1, len = this.data.length; i < len; i++) {
-      const row = this.data[i];
-      for (let j = 0, len = row.length; j < len; j++) {
-        const col = row[j];
-        if (col.type === 'date' && dateToNumber(col.value) >= data.start && dateToNumber(col.value) <= data.end) {
-          filtered.push(row);
-        }
-      }
-    }
-
-    this.renderData(filtered);
+  changeDataSource(dataName) {
+    this.dataModel = new DataModel(this.datasets[dataName]);
+    this.data = this.dataModel.getValues();
+    this.container.remove();
+    this.initContainer();
+    this.render();
   }
 }

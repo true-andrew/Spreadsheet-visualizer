@@ -1,4 +1,4 @@
-const documents = [
+const documentsArr = [
   [
     {
       type: 'header',
@@ -99,7 +99,7 @@ const documents = [
   ]
 ];
 
-const users = [
+const usersArr = [
   [
     {
       type: 'header',
@@ -168,23 +168,18 @@ function addIdToData(data) {
   }
 }
 
-addIdToData(documents);
-addIdToData(users);
+addIdToData(documentsArr);
+addIdToData(usersArr);
 
-const doc = () => {
+function getData() {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(documents);
-    }, 3000);
+      resolve({
+        "Documents": documentsArr,
+        "Users": usersArr
+      });
+    }, Math.random() * 1000 + 1000);
   })
-};
+}
 
-const us = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(users);
-    }, 1500);
-  })
-};
-
-export {doc, us};
+export {getData};

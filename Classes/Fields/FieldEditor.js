@@ -31,18 +31,14 @@ export class FieldEditor extends BaseComponent {
     } else if (e.target === this.discardBtn) {
       outputValue = this.value;
     }
-    this.emit('endEdit', outputValue);
+    this.container.dispatchEvent(new CustomEvent('endEdit', {detail: outputValue}));
   }
 
   handleEvent_keypress(e) {
     if (e.key === 'Enter') {
-      this.emit('endEdit', this.inputElement.value);
+      this.container.dispatchEvent(new CustomEvent('endEdit', {detail: this.inputElement.value}));
     }
   }
-
-  // wasInputUpdated() {
-  //   return this.value === this.inputElement.value;
-  // }
 
   createEditFieldContainer() {
     const propContainer = createDOMElement('div', undefined, 'editing-field');

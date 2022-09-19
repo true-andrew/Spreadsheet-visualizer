@@ -1,5 +1,6 @@
 @import "Classes/Datepicker/datepicker.css";
 @import "userCard.css";
+@import "loader.css";
 
 body {
     margin: 0;

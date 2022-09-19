@@ -5,7 +5,7 @@ import {HeaderField} from "../Fields/HeaderField.js";
 import {UserField} from "../Fields/UserField.js";
 
 export class TableVisualisator extends BaseComponent {
-  constructor(mountPoint, tableComponent) {
+  constructor(mountPoint, tableComponent, numberOfRecords) {
     super(mountPoint);
     this.tableComponent = tableComponent;
     this.init();
@@ -20,6 +20,9 @@ export class TableVisualisator extends BaseComponent {
 
   initContainer() {
     this.container = createDOMElement('table', undefined, 'table');
+    this.container.addEventListener('update', () => {
+      console.log('Table Visualisator');
+    })
   }
 
   generateCells(data) {
@@ -49,10 +52,6 @@ const fields = {
   'header': HeaderField,
 }
 
-function createField(mountPoint, fieldObj, eventHandler) {
-  const field = new fields[fieldObj.type](mountPoint, fieldObj);
-  if (field.eventName) {
-    field.on(field.eventName, eventHandler);
-  }
-  return field;
+function createField(mountPoint, fieldObj, tableComponent) {
+  return new fields[fieldObj.type](mountPoint, fieldObj, tableComponent);
 }

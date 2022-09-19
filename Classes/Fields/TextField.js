@@ -2,14 +2,15 @@ import {createDOMElement} from "../../helper.js";
 import {
   FieldEditorText,
   FieldEditorTextarea
-} from "./FieldEdtor.js";
-import {DatePicker} from "../Datepicker/DatePicker.js";
+} from "./FieldEditor.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {DatePickerTextField} from "../Datepicker/DatePickerTextField.js";
 
+
 export class TextField extends BaseComponent {
-  constructor(mountPoint, field) {
+  constructor(mountPoint, field, tableComponent) {
     super(mountPoint);
+    this.tableComponent = tableComponent;
     this.type = field.type;
     this.value = field.value;
     this.idRow = field.idRow;
@@ -17,17 +18,17 @@ export class TextField extends BaseComponent {
     this.init();
   }
 
-  type;
-  value;
-  idRow;
-  idCol;
-  eventName = 'saveChanges';
+  // type;
+  // value;
+  // idRow;
+  // idCol;
+  // tableComponent;
 
-  handleEvent(e, data) {
+  handleEvent(e) {
     if (e.type === 'dblclick') {
       this.edit();
-    } else if (e === 'endEdit') {
-      this.saveChanges(data);
+    } else if (e.type === 'endEdit') {
+      this.saveChanges(e.detail);
     } else {
       throw new Error(`Field class doesn't have event: ${e}`);
     }
@@ -50,18 +51,18 @@ export class TextField extends BaseComponent {
     this.container.textContent = '';
     this.removeEventListeners();
     const editingField = createEditField(this);
-    editingField.on('endEdit', this);
+    editingField.container.addEventListener('endEdit', this);
   }
 
   saveChanges(newValue) {
     this.container.textContent = newValue;
     this.value = newValue;
-    this.emit('saveChanges', {
+    this.tableComponent.saveChanges({
       idRow: this.idRow,
       idCol: this.idCol,
       newValue
     });
-    this.initEventListeners();
+    // this.initEventListeners();
   }
 }
 

@@ -33,17 +33,19 @@ export class DatePickerRange extends DatePicker {
 
   resetRange(e) {
     if (this.inputElement.value.length) {
-      this.emit('selectRange');
+      this.container.dispatchEvent(new CustomEvent('selectRange'));
     }
     this.inputElement.value = '';
     this.hide();
   }
 
   setInputFieldValue(date) {
-    if (this.startDate === undefined) {
+    if (this.startDate === undefined && date !== undefined) {
       this.inputElement.value = formatDate(date);
+    } else if (this.endDate === undefined && date !== undefined) {
+      this.inputElement.value = formatDate(this.startDate) + '   -   ' + formatDate(date);
     } else {
-      this.inputElement.value += '   -   ' + formatDate(date);
+      this.inputElement.value = '';
     }
   }
 
@@ -54,6 +56,11 @@ export class DatePickerRange extends DatePicker {
     } else {
       this.setEndDate();
     }
+  }
+
+  handleEvent_input(ev) {
+    //add manual input
+    this.setInputFieldValue();
   }
 
   setStartDate() {
@@ -70,10 +77,12 @@ export class DatePickerRange extends DatePicker {
       this.reverseRange();
     }
 
-    this.emit('selectRange', {
-      start: this.startDate.valueOf(),
-      end: this.endDate.valueOf(),
-    });
+    this.container.dispatchEvent(new CustomEvent('selectRange', {
+      detail: {
+        start: this.startDate.valueOf(),
+        end: this.endDate.valueOf(),
+      }
+    }));
 
     this.hide();
   }
