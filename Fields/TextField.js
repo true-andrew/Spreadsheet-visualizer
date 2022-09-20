@@ -17,17 +17,11 @@ export class TextField extends BaseComponent {
       idCol: options.field.idCol,
       tableComponent: options.tableComponent
     });
-    // this.tableComponent = tableComponent;
-    // this.type = field.type;
-    // this.value = field.value;
-    // this.idRow = field.idRow;
-    // this.idCol = field.idCol;
-    // this.init();
   }
 
   handleEvent(e) {
     if (e.type === 'dblclick') {
-      this.edit();
+      this.editField();
     } else if (e.type === 'endEdit') {
       this.saveChanges(e.detail);
     } else {
@@ -48,7 +42,7 @@ export class TextField extends BaseComponent {
     this.domComponent.removeEventListener('dblclick', this);
   }
 
-  edit() {
+  editField() {
     this.domComponent.textContent = '';
     this.removeEventListeners();
     const editingField = createEditField(this);
@@ -56,8 +50,6 @@ export class TextField extends BaseComponent {
   }
 
   saveChanges(newValue) {
-    this.domComponent.textContent = newValue;
-    this.value = newValue;
     this.tableComponent.saveChanges({
       idRow: this.idRow,
       idCol: this.idCol,

@@ -178,7 +178,7 @@ function getData() {
         "Documents": documentsArr,
         "Users": usersArr
       });
-    }, 0);
+    }, 1000);
   })
 }
 

@@ -39,7 +39,7 @@ export class TableDataModel {
 
   saveChanges(data) {
     this.initialData[data.idRow][data.idCol].value = data.newValue;
-    this.data = this.initialData;
+    this.data = Array.from(this.initialData);
     return this;
   }
 
@@ -73,7 +73,6 @@ export class TableDataModel {
         }
       }
     }
-
     return filtered;
   }
 

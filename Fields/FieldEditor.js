@@ -9,16 +9,8 @@ export class FieldEditor extends BaseComponent {
       type: options.field.type,
       value: options.field.value,
     });
-    // this.type = type;
-    // this.value = value;
-    // this.init();
   }
-
-  // domComponent;
-  // inputElement;
-  // saveBtn;
-  // discardBtn;
-
+  
   handleEvent(e) {
     const event = 'handleEvent_' + e.type;
     if (this[event]) {

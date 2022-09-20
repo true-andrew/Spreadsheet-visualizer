@@ -9,10 +9,6 @@ export class HeaderField extends BaseComponent {
       idCol: options.field.idCol,
       tableComponent: options.tableComponent
     });
-    // this.tableComponent = tableComponent;
-    // this.value = field.value;
-    // this.idCol = field.idCol;
-    // this.init();
   }
 
   handleEvent(e) {
