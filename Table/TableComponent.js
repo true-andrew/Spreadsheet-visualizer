@@ -1,23 +1,23 @@
+import {createDOMElement} from "../helper.js";
+import {getData} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {TableVisualisator} from "./TableVisualisator.js";
-import {createDOMElement} from "../helper.js";
 import {Search} from "../Controllers/Search.js";
 import {DataSelector} from "../Controllers/DataSelector.js";
 import {TableDataModel} from "./TableDataModel.js";
 import {SearchRange} from "../Controllers/SearchRange.js";
 
 export class TableComponent extends BaseComponent {
-  constructor(data) {
+  constructor(options) {
     super({
-      mountPoint: data.mountPoint,
-      getData: data.getData,
+      mountPoint: options.mountPoint,
     });
   }
 
   init() {
     this.loader = createDOMElement('div', undefined, 'loader');
     this.mountPoint.append(this.loader);
-    this.getData().then(res => {
+    getData().then(res => {
       this.loader.remove();
       this.datasets = res;
       this.dataSelectorComponent = new DataSelector({tableComponent: this});
