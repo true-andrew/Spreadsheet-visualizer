@@ -23,7 +23,11 @@ export class TextField extends BaseComponent {
     if (e.type === 'dblclick') {
       this.editField();
     } else if (e.type === 'endEdit') {
-      this.saveChanges(e.detail);
+      this.tableComponent.saveChanges({
+        idRow: this.idRow,
+        idCol: this.idCol,
+        newValue: e.detail
+      });
     } else {
       throw new Error(`Field class doesn't have event: ${e}`);
     }
@@ -38,23 +42,15 @@ export class TextField extends BaseComponent {
     this.domComponent.addEventListener('dblclick', this);
   }
 
-  removeEventListeners() {
+  removeEvents() {
     this.domComponent.removeEventListener('dblclick', this);
   }
 
   editField() {
     this.domComponent.textContent = '';
-    this.removeEventListeners();
+    this.removeEvents();
     const editingField = createEditField(this);
     editingField.domComponent.addEventListener('endEdit', this);
-  }
-
-  saveChanges(newValue) {
-    this.tableComponent.saveChanges({
-      idRow: this.idRow,
-      idCol: this.idCol,
-      newValue
-    });
   }
 }
 

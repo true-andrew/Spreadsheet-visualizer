@@ -23,5 +23,4 @@ export class SearchRange extends BaseComponent {
     datePickerRange.domComponent.addEventListener('selectRange', this);
     this.domComponent.append(datepickerContainer);
   }
-
 }

@@ -10,15 +10,11 @@ export class TableVisualisator extends BaseComponent {
       mountPoint: options.tableComponent.domComponent,
       tableComponent: options.tableComponent
     });
-    // this.tableComponent = tableComponent;
-    // this.init();
   }
 
-  // tableComponent;
 
   init() {
     super.init();
-    // this.generateCells(this.tableComponent.data);
   }
 
   createDomElements() {

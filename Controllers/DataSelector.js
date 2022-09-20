@@ -8,8 +8,6 @@ export class DataSelector extends BaseComponent {
       mountPoint: options.tableComponent.mountPoint,
       tableComponent: options.tableComponent,
     });
-    // this.tableComponent = data;
-    // this.init();
   }
 
   handleEvent(e) {
@@ -30,7 +28,6 @@ export class DataSelector extends BaseComponent {
     for (let i = 0, len = keys.length; i < len; i++) {
       if (i === 0) {
         this.tableComponent.dataModel = new TableDataModel(this.tableComponent.datasets[keys[i]]);
-        this.tableComponent.data = this.tableComponent.dataModel.getValues();
       }
       const option = createDOMElement('option', keys[i]);
       option.value = keys[i];

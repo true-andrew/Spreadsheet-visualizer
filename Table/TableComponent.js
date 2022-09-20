@@ -32,7 +32,7 @@ export class TableComponent extends BaseComponent {
     this.searchComponent = new Search({mountPoint: this.controllersContainer, tableComponent: this});
     this.searchRangeComponent = new SearchRange({mountPoint: this.controllersContainer, tableComponent: this});
     this.tableVisualisator = new TableVisualisator({tableComponent: this});
-    this.tableVisualisator.generateCells(this.data);
+    this.renderData();
   }
 
   render() {
@@ -42,36 +42,33 @@ export class TableComponent extends BaseComponent {
 
   sortData(colNumber) {
     this.dataModel.setFilter('sort', {colNumber});
-    this.data = this.dataModel.getValues();
-    this.renderData(this.data);
+    this.renderData();
   }
 
   searchData(searchValue, colNumber) {
-    this.data = this.dataModel.setFilter('search', {
+    this.dataModel.setFilter('search', {
       searchValue,
       colNumber
-    }).getValues();
-    this.renderData(this.data);
+    });
+    this.renderData();
   }
 
   searchDateRange(data) {
-    this.data = this.dataModel.setFilter('searchDateRange', data).getValues();
-    this.renderData(this.data);
+    this.dataModel.setFilter('searchDateRange', data);
+    this.renderData();
   }
 
   saveChanges(data) {
-    console.log('saving changes');
-    this.data = this.dataModel.saveChanges(data).getValues();
-    this.renderData(this.data);
+    this.dataModel.saveChanges(data);
+    this.renderData();
   }
 
-  renderData(data) {
-    this.tableVisualisator.generateCells(data);
+  renderData() {
+    this.tableVisualisator.generateCells(this.dataModel.getValues());
   }
 
   changeDataSource(dataName) {
     this.dataModel = new TableDataModel(this.datasets[dataName]);
-    this.data = this.dataModel.getValues();
     this.domComponent.remove();
     this.createDomElements();
     this.render();

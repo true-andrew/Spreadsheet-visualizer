@@ -10,7 +10,6 @@ export class TableDataModel {
     this.initialData = Array.from(data);
   }
 
-
   data;
   initialData;
   sortOrder = false;
