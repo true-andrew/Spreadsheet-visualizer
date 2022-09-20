@@ -43,75 +43,56 @@ export class TableDataModel {
     return this;
   }
 
-  iterateAllElems() {
-    for (let i = 1, len = this.data.length; i < len; i++) {
-      const row = this.data[i];
-      for (let j = 0, len = row.length; j < len; j++) {
-        const elem = row[j];
-      }
-    }
-  }
-
   searchDateRange(data) {
     if (data === null) {
       this.data = this.initialData;
       return;
     }
-    const filtered = [];
+    this.data = this.filterElems(this.compareDateRange, data);
+  }
 
+  search(data) {
+    console.log('search in data');
+    if (data.searchValue === '') {
+      this.data = this.initialData;
+      return;
+    }
+    this.data = this.filterElems(this.compareValue, data);
+  }
+
+  filterElems(compareFn, searchVal) {
+    const filtered = [];
     filtered.push(this.data[0]);
 
     for (let i = 1, len = this.data.length; i < len; i++) {
       const row = this.data[i];
       for (let j = 0, len = row.length; j < len; j++) {
-        const col = row[j];
-        if (col.type === 'date') {
-          const dateNum = dateToNumber(col.value);
-          if (dateNum >= data.start && dateNum <= data.end) {
-            filtered.push(row);
-          }
+        const elem = row[j];
+        if (compareFn(elem, searchVal) && !filtered.includes(row)) {
+          filtered.push(row);
         }
       }
     }
 
-    this.data = filtered;
+    return filtered;
   }
 
-  search(data) {
-    console.log('search in data');
-    const searchValue = data.searchValue;
-    const colNumber = data.colNumber;
-    if (searchValue === '') {
-      this.data = this.initialData;
-      return;
-    }
-
-    const filteredData = [];
-    //add headers to result
-    filteredData.push(this.data[0]);
-
-    for (let i = 1, len = this.data.length; i < len; i++) {
-      const row = this.data[i];
-      for (let j = 0, len = row.length; j < len; j++) {
-        if (colNumber !== null) {
-          if (colNumber === j) {
-            this.appendToFiltered(filteredData, row, j, searchValue);
-          }
-        } else {
-          this.appendToFiltered(filteredData, row, j, searchValue);
-        }
+  compareDateRange(elem, data) {
+    if (elem.type === 'date') {
+      const dateNum = dateToNumber(elem.value);
+      if (dateNum >= data.start && dateNum <= data.end) {
+        return true;
       }
     }
-
-    this.data = filteredData;
+    return false;
   }
 
-  appendToFiltered(filteredData, row, columnNumber, searchValue) {
-    const fieldValue = String(row[columnNumber].value);
-    if (fieldValue.toLowerCase().includes(searchValue.toLowerCase())) {
-      if (!filteredData.includes(row)) {
-        filteredData.push(row);
-      }
+  compareValue(elem, data) {
+    const compared = String(elem.value).toLowerCase().includes(data.searchValue.toLowerCase())
+    if (data.colNumber !== null) {
+      return data.colNumber === elem.idCol && compared;
+    } else {
+      return compared;
     }
   }
 }
