@@ -8,8 +8,6 @@ export class SearchRange extends BaseComponent {
       mountPoint: options.mountPoint,
       tableComponent: options.tableComponent
     });
-    // this.tableComponent = tableComponent;
-    // this.init();
   }
 
   handleEvent(e) {
@@ -18,9 +16,9 @@ export class SearchRange extends BaseComponent {
 
   createDomElements() {
     this.domComponent = createDOMElement('div', undefined, 'controller');
-    const datepickerContainer = createDOMElement('div');
-    const datePickerRange = new DatePickerRange({mountPoint: datepickerContainer});
+    const datePickerRange = new DatePickerRange({mountPoint: this.domComponent});
+    datePickerRange.domComponent.style.width = 'inherit';
+    datePickerRange.domComponent.style.marginRight = '10px';
     datePickerRange.domComponent.addEventListener('selectRange', this);
-    this.domComponent.append(datepickerContainer);
   }
 }

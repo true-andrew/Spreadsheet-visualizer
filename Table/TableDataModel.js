@@ -7,7 +7,7 @@ export class TableDataModel {
 
   init(data) {
     this.data = data;
-    this.initialData = Array.from(data);
+    this.initialData = data;
   }
 
   data;
@@ -44,7 +44,7 @@ export class TableDataModel {
 
   searchDateRange(data) {
     if (data === null) {
-      this.data = this.initialData;
+      this.data = Array.from(this.initialData);
       return;
     }
     this.data = this.filterElems(this.compareDateRange, data);
@@ -53,7 +53,7 @@ export class TableDataModel {
   search(data) {
     console.log('search in data');
     if (data.searchValue === '') {
-      this.data = this.initialData;
+      this.data = Array.from(this.initialData);
       return;
     }
     this.data = this.filterElems(this.compareValue, data);

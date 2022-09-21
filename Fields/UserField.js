@@ -26,8 +26,8 @@ export class UserField extends BaseComponent {
   }
 
   createDomElements() {
-    this.domComponent = createDOMElement('td', this.value);
-    this.domComponent.style.position = 'relative';
+    this.domComponent = createDOMElement('td', this.value, 'user-field');
+    // this.domComponent.style.position = 'relative';
   }
 
   initEvents() {
@@ -56,14 +56,12 @@ export class UserField extends BaseComponent {
       const p = createDOMElement('p', this.additional[additionalInfo[i]]);
       this.user.append(p);
     }
-
-    // this.user.addEventListener('mouseleave', this);
   }
 
   setUserCardPosition(e) {
     this.user.style.position = 'absolute';
-    this.user.style.zIndex = "100";
-    this.user.style.top = "0";
+    this.user.style.top = 0;
+    // this.user.style.left = e.clientX + 25 + 'px';
     this.user.style.left = this.domComponent.offsetWidth + 'px';
   }
 }

@@ -12,6 +12,7 @@ export class TableComponent extends BaseComponent {
     super({
       mountPoint: options.mountPoint,
     });
+    this.mountPoint.classList.add('table_component');
   }
 
   init() {

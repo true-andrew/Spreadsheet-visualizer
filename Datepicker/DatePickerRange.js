@@ -4,6 +4,7 @@ import {createDOMElement} from "../helper.js";
 export class DatePickerRange extends DatePicker {
   constructor(options) {
     super({mountPoint: options.mountPoint});
+    this.domComponent.classList.add('date-picker');
   }
 
   startDate;
@@ -11,15 +12,15 @@ export class DatePickerRange extends DatePicker {
 
   init() {
     super.init();
-    this.mountPoint.classList.add('date-picker');
+
     this.inputElement.placeholder = 'DD.MM.YYYY - DD.MM.YYYY';
-    this.mountPoint.style.width = '100%';
+    // this.mountPoint.style.width = '100%';
     this.inputElement.style.textAlign = 'center';
     const resetBtn = createDOMElement('button', 'Reset', undefined, {
       action: 'resetRange',
     });
     resetBtn.addEventListener('click', this);
-    this.domComponent.append(resetBtn)
+    this.mountPoint.append(resetBtn);
   }
 
   hide() {
