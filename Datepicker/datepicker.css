@@ -4,10 +4,8 @@ DATEPICKER
 
 .date-picker {
     position: relative;
-    z-index: 100;
-    /*margin: 30px auto;*/
     background-color: #FFF;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ddd;
     user-select: none;
 }
 
@@ -20,6 +18,7 @@ DATEPICKER
 .date-picker .selected-date {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
     border: none;
     outline: none;
     color: #313131;
@@ -35,7 +34,6 @@ DATEPICKER
     top: 100%;
     left: 0;
     right: 0;
-
     background-color: #FFF;
 }
 
@@ -112,7 +110,7 @@ DATEPICKER
 }
 
 .today {
-    background-color: #cfecff;
+    background-color: #cfecff!important;
 }
 
 .prev, .next {
@@ -125,11 +123,10 @@ DATEPICKER
 
 .btn {
     width: 100%;
-    height: 25px;
-    border: none;
+    border: none!important;
     cursor: pointer;
 }
 
 .today:hover {
-    background-color: #93d4ff;
+    background-color: #93d4ff!important;
 }

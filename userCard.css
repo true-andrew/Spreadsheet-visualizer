@@ -23,3 +23,7 @@
 .user-card p {
     text-align: center;
 }
+
+.user-field:hover {
+    position: relative;
+}
