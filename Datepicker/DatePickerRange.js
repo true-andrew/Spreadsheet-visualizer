@@ -2,25 +2,18 @@ import {DatePicker, formatDate} from "./DatePicker.js";
 import {createDOMElement} from "../helper.js";
 
 export class DatePickerRange extends DatePicker {
-  constructor(options) {
-    super({mountPoint: options.mountPoint});
-    this.domComponent.classList.add('date-picker');
-  }
-
   startDate;
   endDate;
 
-  init() {
-    super.init();
-
+  renderComponent() {
+    super.renderComponent();
     this.inputElement.placeholder = 'DD.MM.YYYY - DD.MM.YYYY';
-    // this.mountPoint.style.width = '100%';
-    this.inputElement.style.textAlign = 'center';
+    this.domComponent.classList.add('date-picker', 'date-picker-range');
     const resetBtn = createDOMElement('button', 'Reset', undefined, {
       action: 'resetRange',
     });
     resetBtn.addEventListener('click', this);
-    this.mountPoint.append(resetBtn);
+    this.inputElement.after(resetBtn);
   }
 
   hide() {
@@ -32,7 +25,7 @@ export class DatePickerRange extends DatePicker {
     this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
   }
 
-  resetRange(e) {
+  resetRange() {
     if (this.inputElement.value.length) {
       this.domComponent.dispatchEvent(new CustomEvent('selectRange'));
     }
@@ -59,7 +52,7 @@ export class DatePickerRange extends DatePicker {
     }
   }
 
-  handleEvent_input(ev) {
+  handleEvent_input() {
     //add manual input
     this.setInputFieldValue();
   }
@@ -79,11 +72,12 @@ export class DatePickerRange extends DatePicker {
     }
 
     this.domComponent.dispatchEvent(new CustomEvent('selectRange', {
-      detail: {
-        start: this.startDate.valueOf(),
-        end: this.endDate.valueOf(),
+        detail: {
+          start: this.startDate.valueOf(),
+          end: this.endDate.valueOf(),
+        }
       }
-    }));
+    ));
 
     this.hide();
   }

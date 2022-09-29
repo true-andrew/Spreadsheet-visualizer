@@ -2,7 +2,7 @@ const documentsArr = [
   [
     {
       type: 'header',
-      value: 'Document ID',
+      value: 'ID',
     },
     {
       type: 'header',
@@ -27,7 +27,7 @@ const documentsArr = [
       value: 1
     },
     {
-      type: 'text',
+      type: 'textarea',
       value: 'Operations',
     },
     {
@@ -156,7 +156,50 @@ const usersArr = [
       value: 'manager',
     },
   ],
-]
+];
+
+const noDate = [
+  [
+    {
+      type: 'header',
+      value: 'Username'
+    },
+    {
+      type: 'header',
+      value: 'Description'
+    }
+  ],
+  [
+    {
+      type: 'text',
+      value: 'aaa'
+    },
+    {
+      type: 'textarea',
+      value: 'about...',
+    },
+  ],
+  [
+    {
+      type: 'text',
+      value: 'bbb'
+    },
+    {
+      type: 'textarea',
+      value: 'developer',
+    },
+  ],
+  [
+    {
+      type: 'text',
+      value: 'ccc'
+    },
+    {
+      type: 'textarea',
+      value: 'manager',
+    },
+  ],
+];
 
 function addIdToData(data) {
   for (let i = 0, len = data.length; i < len; i++) {
@@ -170,13 +213,15 @@ function addIdToData(data) {
 
 addIdToData(documentsArr);
 addIdToData(usersArr);
+addIdToData(noDate);
 
 function getData() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         "Documents": documentsArr,
-        "Users": usersArr
+        "Users": usersArr,
+        "No Date": noDate,
       });
     }, 1000);
   })

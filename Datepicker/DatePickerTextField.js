@@ -1,11 +1,11 @@
 import {DatePicker} from "./DatePicker.js";
 
 export class DatePickerTextField extends DatePicker {
-  constructor(options) {
-    super({mountPoint: options.field.domComponent});
+  renderComponent() {
+    super.renderComponent();
     this.domComponent.classList.add('date-picker');
+    this.setInitDate(this.field.value);
     this.show();
-    this.setInitDate(options.field.value);
   }
 
   hide() {

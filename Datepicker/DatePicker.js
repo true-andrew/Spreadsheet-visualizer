@@ -4,28 +4,19 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export class DatePicker extends BaseComponent {
-  constructor(options) {
-    super({
-      mountPoint: options.mountPoint,
-      displayedDate: new Date()
-    });
-    // this.displayedDate = new Date();
-    // this.init();
-  }
-
   //elements
-  // calendar;
-  // inputElement;
-  // prevMonthElement;
-  // nextMonthElement;
-  // monthElement;
-  // weekDays;
-  // daysElement;
-  // todayBtn;
+  calendar;
+  inputElement;
+  prevMonthElement;
+  nextMonthElement;
+  monthElement;
+  weekDays;
+  daysElement;
+  todayBtn;
   //data
-  // displayedDate;
-  // selectedDate;
-  // viewMode;
+  displayedDate;
+  selectedDate;
+  viewMode;
   //regexp
   regExDelete = /delete/;
   regExIsNumber = /\d/;
@@ -40,7 +31,11 @@ export class DatePicker extends BaseComponent {
     }
   }
 
-  createDomElements() {
+  init() {
+    this.displayedDate =  new Date();
+  }
+
+  renderComponent() {
     this.domComponent = createEl('div');
     this.inputElement = createEl('input', 'selected-date', undefined, {
       type: 'text',

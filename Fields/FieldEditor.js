@@ -3,14 +3,6 @@ import {BaseComponent} from "../BaseComponent.js";
 
 
 export class FieldEditor extends BaseComponent {
-  constructor(options) {
-    super({
-      mountPoint: options.field.domComponent,
-      type: options.field.type,
-      value: options.field.value,
-    });
-  }
-  
   handleEvent(e) {
     const event = 'handleEvent_' + e.type;
     if (this[event]) {
@@ -25,7 +17,7 @@ export class FieldEditor extends BaseComponent {
     if (e.target === this.saveBtn) {
       outputValue = this.inputElement.value;
     } else if (e.target === this.discardBtn) {
-      outputValue = this.value;
+      outputValue = this.field.value;
     }
     this.domComponent.dispatchEvent(new CustomEvent('endEdit', {detail: outputValue}));
   }
@@ -38,7 +30,7 @@ export class FieldEditor extends BaseComponent {
 
   createEditFieldContainer() {
     const propContainer = createDOMElement('div', undefined, 'editing-field');
-    const btnContainer = this.createBtnGroup()
+    const btnContainer = this.createBtnGroup();
     propContainer.append(btnContainer);
     return propContainer;
   }
@@ -47,20 +39,21 @@ export class FieldEditor extends BaseComponent {
     const btnContainer = createDOMElement('div');
 
     this.saveBtn = createDOMElement('button', 'Save', 'button', {action: 'saveChanges'});
-    this.saveBtn.addEventListener('click', this);
-
     this.discardBtn = createDOMElement('button', 'Discard', 'button', {action: 'discardChanges'});
-    this.discardBtn.addEventListener('click', this);
-
     btnContainer.append(this.saveBtn, this.discardBtn);
 
     return btnContainer;
   }
+
+  initEvents() {
+    this.saveBtn.addEventListener('click', this);
+    this.discardBtn.addEventListener('click', this);
+  }
 }
 
 export class FieldEditorText extends FieldEditor {
-  createDomElements() {
-    this.domComponent = this.createEditFieldInput(this.type, this.value);
+  renderComponent() {
+    this.domComponent = this.createEditFieldInput(this.field.type, this.field.value);
   }
 
   createEditFieldInput(type, value) {
@@ -71,23 +64,24 @@ export class FieldEditorText extends FieldEditor {
   }
 
   createInputElement(type, value) {
-    const inputElement = createDOMElement('input', undefined, 'form__field');
+    const inputElement = createDOMElement('input', undefined, 'editing-field_input');
     inputElement.addEventListener('keypress', this);
     inputElement.type = type;
+    // inputElement.size = value.toString().length;
     inputElement.value = value;
     return inputElement;
   }
 }
 
 export class FieldEditorTextarea extends FieldEditor {
-  createDomElements() {
+  renderComponent() {
     this.domComponent = this.createEditFieldTextarea();
   }
 
   createEditFieldTextarea() {
     const container = this.createEditFieldContainer();
-    this.inputElement = createDOMElement('textarea', undefined, 'form__textarea');
-    this.inputElement.value = this.value;
+    this.inputElement = createDOMElement('textarea', undefined, 'editing-field_textarea');
+    this.inputElement.value = this.field.value;
     container.prepend(this.inputElement);
     return container;
   }

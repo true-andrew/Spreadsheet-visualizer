@@ -44,9 +44,20 @@
     background-color: #abe1ff;
 }
 
+.table_container {
+    /*width: 450px;*/
+    /*height: 400px;*/
+    /*overflow-y: scroll;*/
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;
+}
+
+.table td {
+    width: 60px;
+    text-align: center;
 }
 
 .table td, .table th {
@@ -61,7 +72,7 @@
 }
 
 .editing-field {
-    width: inherit;
+    /*width: inherit;*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -70,6 +81,10 @@
 
 .editing-field div button {
     margin: 5px;
+}
+
+.editing-field_input, .editing-field_textarea {
+    width: 100%;
 }
 
 
@@ -81,12 +96,25 @@
     background-color: #d0d0d0;
 }
 
+.controllers {
+    display: flex;
+    justify-content: space-between;
+}
+
 .controller {
     width: 100%;
-    min-width: 400px;
+    /*min-width: 400px;*/
     padding: 12px 0;
     box-sizing: border-box;
-    border-bottom: 1px solid black;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+}
+
+.search-container > input {
+    flex-grow: 1;
 }

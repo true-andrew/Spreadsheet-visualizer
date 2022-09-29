@@ -1,18 +1,31 @@
 import {dateToNumber, insertSort} from "../helper.js";
 
 export class TableDataModel {
-  constructor(data) {
-    this.init(data);
-  }
-
-  init(data) {
-    this.data = data;
+  constructor(data, name) {
+    this.name = name;
+    this.data = Array.from(data);
     this.initialData = data;
+    this.init();
   }
 
   data;
   initialData;
   sortOrder = false;
+  dateRange = false;
+  // appliedFilters = [];
+
+  init() {
+    for (let i = 0, len = this.data.length; i < len; i++) {
+      const row = this.data[i];
+      for (let j = 0, len = row.length; j < len; j++) {
+        const elem = row[j];
+        if (elem.type === 'date') {
+          this.dateRange = true;
+          break;
+        }
+      }
+    }
+  }
 
   setFilter(filter, data) {
     if (filter === 'sort') {
@@ -38,7 +51,11 @@ export class TableDataModel {
 
   saveChanges(data) {
     this.initialData[data.idRow][data.idCol].value = data.newValue;
-    this.data = Array.from(this.initialData);
+    for (let i = 0, len = this.data.length; i < len; i++) {
+      if (this.data[i][data.idCol].idRow === data.idRow) {
+        this.data[i][data.idCol].value = data.newValue;
+      }
+    }
     return this;
   }
 

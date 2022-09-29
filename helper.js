@@ -52,3 +52,39 @@ export function insertSort(arr, order, colNumber) {
     arr[j] = temp;
   }
 }
+
+function elFactory(type, attributes, children) {
+  const el = document.createElement(type);
+
+  const keys = Object.keys(attributes);
+  for (let i = 0, len = keys.length; i < len; i++) {
+    const key = keys[i];
+    el.setAttribute(key, attributes[key]);
+  }
+
+  console.log(children);
+  // for (let i = 0, len = arguments.length; i < len; i++) {
+  //
+  // }
+
+  children.forEach(child => {
+    if (typeof child === 'string') {
+      el.appendChild(document.createTextNode(child))
+    } else {
+      el.appendChild(child)
+    }
+  })
+
+  return el;
+}
+
+// const markup = elFactory(
+//   'div',
+//   {
+//     class: 'my-component ttt',
+//   },
+//   [elFactory('span', {}, ['Hello World!']),
+//     'Thanks for reading my blog!']
+// );
+//
+// console.log(markup)

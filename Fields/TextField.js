@@ -8,34 +8,19 @@ import {DatePickerTextField} from "../Datepicker/DatePickerTextField.js";
 
 
 export class TextField extends BaseComponent {
-  constructor(options) {
-    super({
-      mountPoint: options.mountPoint,
-      type: options.field.type,
-      value: options.field.value,
-      idRow: options.field.idRow,
-      idCol: options.field.idCol,
-      tableComponent: options.tableComponent
-    });
-  }
-
   handleEvent(e) {
     if (e.type === 'dblclick') {
       this.editField();
     } else if (e.type === 'endEdit') {
-      this.tableComponent.saveChanges({
-        idRow: this.idRow,
-        idCol: this.idCol,
-        newValue: e.detail
-      });
+      this.saveChanges(e);
     } else {
       throw new Error(`Field class doesn't have event: ${e}`);
     }
   }
 
-  createDomElements() {
-    this.domComponent = createDOMElement('td', this.value);
-    this.domComponent.title = this.type;
+  renderComponent() {
+    this.domComponent = createDOMElement('td', this.field.value);
+    this.domComponent.title = this.field.type;
   }
 
   initEvents() {
@@ -47,10 +32,28 @@ export class TextField extends BaseComponent {
   }
 
   editField() {
+    if (this.tableComponent.cellIsEditing) {
+      return;
+    }
+    this.tableComponent.cellIsEditing = true;
     this.domComponent.textContent = '';
     this.removeEvents();
     const editingField = createEditField(this);
+    editingField.init();
+    editingField.mountPoint = this.domComponent;
+    editingField.renderComponent();
+    editingField.mountComponent(this.domComponent);
     editingField.domComponent.addEventListener('endEdit', this);
+  }
+
+  saveChanges(e) {
+    this.tableComponent.saveChanges({
+      idRow: this.field.idRow,
+      idCol: this.field.idCol,
+      newValue: e.detail
+    });
+    this.domComponent.textContent = e.detail;
+    this.initEvents();
   }
 }
 
@@ -61,7 +64,6 @@ const options = {
   'date': DatePickerTextField
 }
 
-function createEditField(field) {
-  const targetClass = options[field.type];
-  return new targetClass({field});
+function createEditField(cell) {
+  return  new options[cell.field.type]({field: cell.field});
 }

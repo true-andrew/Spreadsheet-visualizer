@@ -24,13 +24,32 @@ DATEPICKER
     color: #313131;
 }
 
+.date-picker-range {
+    display: flex;
+}
+
+.date-picker-range .selected-date {
+    flex-grow: 1;
+    height: auto;
+}
+
+.date-picker-range > button {
+    min-width: 70px;
+    max-width: 15%;
+}
+
 .date-picker .selected-date:hover {
     background-color: #F3F3F3;
+}
+
+.date-picker .selected-date::placeholder {
+    font-size: 1rem;
 }
 
 .date-picker .calendar {
     display: none;
     position: absolute;
+    width: 325px;
     top: 100%;
     left: 0;
     right: 0;
