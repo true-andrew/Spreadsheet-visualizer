@@ -1,7 +1,7 @@
 import {createDOMElement} from "../helper.js";
 import {getData} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
-import {Search} from "../Controllers/Search.js";
+import {SearchBar} from "../Controllers/SearchBar.js";
 import {TableDataModel} from "./TableDataModel.js";
 import {TextField} from "../Fields/TextField.js";
 import {UserField} from "../Fields/UserField.js";
@@ -9,7 +9,7 @@ import {HeaderField} from "../Fields/HeaderField.js";
 
 export class TableComponent extends BaseComponent {
   datasets;
-  cellIsEditing = false;
+  isCellEditing = false;
 
   handleEvent(e) {
     if (e.type === 'click') {
@@ -20,13 +20,12 @@ export class TableComponent extends BaseComponent {
   }
 
   async init(data) {
-    // const loader = createDOMElement('div', undefined, 'loader');
-    // this.mountPoint.append(loader);
     await getData().then(res => {
       this.datasets = res;
       const firstData = Object.entries(this.datasets)[0];
       this.dataModel = new TableDataModel(firstData[1], firstData[0]);
-      this.searchComponent = new Search({tableComponent: this});
+      this.searchComponent = new SearchBar({tableComponent: this});
+      this.searchComponent.init();
     });
   }
 
@@ -35,8 +34,9 @@ export class TableComponent extends BaseComponent {
     this.domComponent = createDOMElement('div');
 
     //controllers
-    this.searchComponent.createDomElements();
-    this.searchElement = this.searchComponent.domComponent;
+    this.searchComponent.renderComponent();
+    this.searchComponent.mountPoint = this.domComponent;
+    this.searchComponent.mountComponent();
 
     //table
     this.tableContainer = createDOMElement('div', undefined, 'table_container')
@@ -56,7 +56,7 @@ export class TableComponent extends BaseComponent {
     }
     this.dataSourcesContainer = dataSources;
 
-    this.domComponent.replaceChildren(this.searchElement, this.tableContainer, this.dataSourcesContainer);
+    this.domComponent.replaceChildren(this.searchComponent.domComponent, this.tableContainer, this.dataSourcesContainer);
   }
 
   mountComponent() {
@@ -65,15 +65,18 @@ export class TableComponent extends BaseComponent {
   }
 
   sortData(colNumber) {
+    if(this.isCellEditing) {
+      return;
+    }
     this.dataModel.setFilter('sort', {colNumber});
     this.renderData();
   }
 
-  searchData(searchValue, colNumber) {
-    this.dataModel.setFilter('search', {
-      searchValue,
-      colNumber
-    });
+  searchData(data) {
+    if (this.isCellEditing) {
+      return;
+    }
+    this.dataModel.setFilter('search', data);
     this.renderData();
   }
 
@@ -83,7 +86,7 @@ export class TableComponent extends BaseComponent {
   }
 
   saveChanges(data) {
-    this.cellIsEditing = false;
+    this.isCellEditing = false;
     this.dataModel.saveChanges(data);
   }
 

@@ -8,7 +8,7 @@ export class DatePickerRange extends DatePicker {
   renderComponent() {
     super.renderComponent();
     this.inputElement.placeholder = 'DD.MM.YYYY - DD.MM.YYYY';
-    this.domComponent.classList.add('date-picker', 'date-picker-range');
+    this.domComponent.classList.add('date-picker-range');
     const resetBtn = createDOMElement('button', 'Reset', undefined, {
       action: 'resetRange',
     });

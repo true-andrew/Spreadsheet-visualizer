@@ -1,54 +1,49 @@
 import {createDOMElement} from "../helper.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
+import {Search} from "../Search/Search.js";
 
-export class Search extends BaseComponent {
-  searchInputValue = '';
-
+export class SearchBar extends BaseComponent {
   handleEvent(e) {
-    if (e.type === 'keypress') {
-      this.handleKeyPress(e);
-    } else if (e.type === 'selectRange') {
+    if (e.type === 'selectRange') {
       this.tableComponent.searchDateRange(e.detail);
+    } else if (e.type === 'search') {
+      this.tableComponent.searchData({
+        searchValue: e.detail,
+        colNumber: JSON.parse(this.selectColumnElement.value)
+      })
     } else {
       throw new Error(`Unhandled ev: ${e.type}`);
     }
   }
 
-  handleKeyPress(e) {
-    if (this.searchInputValue === e.target.value) {
-      return;
-    }
-    if (e.key === 'Enter') {
-      this.searchInputValue = e.target.value;
-      this.tableComponent.searchData(this.searchInputValue, JSON.parse(this.selectColumnElement.value));
-    }
+  init() {
+    this.searchField = new Search({});
+    this.searchField.init();
   }
 
-  createDomElements() {
+  renderComponent() {
     this.domComponent = createDOMElement('div', undefined, 'controller');
-    this.domComponent.append(this.initSearchField(), this.initSearchRange());
-  }
+    this.searchField.renderComponent();
 
-  initSearchField() {
     const searchContainer = createDOMElement('div', undefined, 'search-container');
-    const inputElement = createDOMElement('input');
-    inputElement.placeholder = 'Search';
-    inputElement.addEventListener('keypress', this);
     this.selectColumnElement = this.createSelector();
-    searchContainer.append(inputElement, this.selectColumnElement);
-    return searchContainer;
-  }
+    searchContainer.append(this.searchField.domComponent, this.selectColumnElement);
 
-  initSearchRange() {
     const datePickerRange = new DatePickerRange({tableComponent: this.tableComponent});
     datePickerRange.init();
     datePickerRange.mountPoint = this.domComponent;
     datePickerRange.renderComponent();
     datePickerRange.domComponent.addEventListener('selectRange', this);
     datePickerRange.mountComponent();
-    return datePickerRange.domComponent;
+
+    this.domComponent.append(searchContainer, datePickerRange.domComponent);
   }
+
+  initEvents() {
+    this.searchField.domComponent.addEventListener('search', this);
+  }
+
 
   createSelector() {
     const selector = createDOMElement('select');

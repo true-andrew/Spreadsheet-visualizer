@@ -4,7 +4,7 @@ import {
   FieldEditorTextarea
 } from "./FieldEditor.js";
 import {BaseComponent} from "../BaseComponent.js";
-import {DatePickerTextField} from "../Datepicker/DatePickerTextField.js";
+import {DatePickerTextField} from "./DatePickerTextField.js";
 
 
 export class TextField extends BaseComponent {
@@ -32,10 +32,10 @@ export class TextField extends BaseComponent {
   }
 
   editField() {
-    if (this.tableComponent.cellIsEditing) {
+    if (this.tableComponent.isCellEditing) {
       return;
     }
-    this.tableComponent.cellIsEditing = true;
+    this.tableComponent.isCellEditing = true;
     this.domComponent.textContent = '';
     this.removeEvents();
     const editingField = createEditField(this);

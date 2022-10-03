@@ -1,4 +1,4 @@
-import {DatePicker} from "./DatePicker.js";
+import {DatePicker} from "../Datepicker/DatePicker.js";
 
 export class DatePickerTextField extends DatePicker {
   renderComponent() {
@@ -8,9 +8,14 @@ export class DatePickerTextField extends DatePicker {
     this.show();
   }
 
+  mountComponent() {
+    super.mountComponent();
+    this.inputElement.focus();
+  }
+
   hide() {
     super.hide();
-    this.domComponent.classList.remove('date-picker');
+    // this.domComponent.classList.remove('date-picker');
     this.domComponent.dispatchEvent(new CustomEvent('endEdit', {detail: this.inputElement.value}));
   }
 

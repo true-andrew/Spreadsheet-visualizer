@@ -36,7 +36,7 @@ export class DatePicker extends BaseComponent {
   }
 
   renderComponent() {
-    this.domComponent = createEl('div');
+    this.domComponent = createEl('div', 'date-picker date-picker-hidden');
     this.inputElement = createEl('input', 'selected-date', undefined, {
       type: 'text',
       placeholder: 'DD.MM.YYYY',
@@ -103,10 +103,12 @@ export class DatePicker extends BaseComponent {
   }
 
   show() {
+    this.domComponent.classList.replace('date-picker-hidden', 'date-picker-active');
     this.calendar.style.display = 'block';
   }
 
   hide() {
+    this.domComponent.classList.replace('date-picker-active', 'date-picker-hidden');
     this.calendar.style.display = 'none';
   }
 

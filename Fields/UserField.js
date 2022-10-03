@@ -1,5 +1,6 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {createDOMElement} from "../helper.js";
+import {UserCard} from "../UserCard.js";
 
 export class UserField extends BaseComponent {
   user;
@@ -12,9 +13,23 @@ export class UserField extends BaseComponent {
     }
   }
 
+  init() {
+    this.user = new UserCard({
+      value: this.field.value,
+      additional: this.field.additional,
+    });
+  }
+
   renderComponent() {
     this.domComponent = createDOMElement('td', this.field.value, 'user-field');
-    // this.domComponent.style.position = 'relative';
+    this.user.mountPoint = this.domComponent;
+    this.user.renderComponent();
+    this.user.domComponent.style.display = 'none';
+  }
+
+  mountComponent() {
+    super.mountComponent();
+    this.user.mountComponent();
   }
 
   initEvents() {
@@ -23,32 +38,17 @@ export class UserField extends BaseComponent {
   }
 
   showPopUp(e) {
-    this.createUserCard();
     this.setUserCardPosition(e);
-    this.domComponent.append(this.user);
+    this.user.domComponent.style.display = '';
   }
 
   hidePopUp() {
-    this.user.remove();
-  }
-
-  createUserCard() {
-    this.user = createDOMElement('div', undefined, 'user-card');
-    const photo = createDOMElement('div', undefined, 'user-card__photo');
-    const name = createDOMElement('h3', this.field.value);
-    const additionalInfo = Object.keys(this.field.additional);
-    this.user.append(photo, name);
-
-    for (let i = 0, len = additionalInfo.length; i < len; i++) {
-      const p = createDOMElement('p', this.field.additional[additionalInfo[i]]);
-      this.user.append(p);
-    }
+    this.user.domComponent.style.display = 'none';
   }
 
   setUserCardPosition(e) {
-    this.user.style.position = 'absolute';
-    this.user.style.top = 0;
-    // this.user.style.left = e.clientX + 25 + 'px';
-    this.user.style.left = this.domComponent.offsetWidth + 'px';
+    this.user.domComponent.style.position = 'absolute';
+    this.user.domComponent.style.top = '0';
+    this.user.domComponent.style.left = this.domComponent.offsetWidth + 'px';
   }
 }

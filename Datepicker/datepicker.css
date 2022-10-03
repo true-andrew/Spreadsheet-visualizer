@@ -3,10 +3,17 @@ DATEPICKER
  */
 
 .date-picker {
-    position: relative;
     background-color: #FFF;
     border: 1px solid #ddd;
     user-select: none;
+}
+
+.date-picker-active {
+    position: relative;
+}
+
+.date-picker-hidden {
+    position: static;
 }
 
 .date-picker > div {
