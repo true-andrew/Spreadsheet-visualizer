@@ -1,6 +1,6 @@
 import {BaseComponent} from "../BaseComponent.js";
 import {createDOMElement} from "../helper.js";
-import {UserCard} from "../UserCard.js";
+import {UserCard} from "../UserCard/UserCard.js";
 
 export class UserField extends BaseComponent {
   user;

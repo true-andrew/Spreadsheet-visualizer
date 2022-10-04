@@ -24,8 +24,31 @@ export class Search extends BaseComponent {
 
     const searchBtn = createDOMElement('button', 'Search', 'search__button');
     searchBtn.addEventListener('click', this);
+
     searchContainer.append(inputElement, searchBtn);
+
+    //
+    if (this.searchCategories) {
+      searchContainer.append(this.createSelector());
+    }
+
     this.domComponent = searchContainer;
+  }
+
+  createSelector() {
+    const selector = createDOMElement('select');
+
+    const initSelectValue = createDOMElement('option', 'All columns');
+    initSelectValue.value = null;
+    selector.append(initSelectValue);
+
+    const data = this.searchCategories;
+    for (let i = 0, len = data.length; i < len; i++) {
+      const option = createDOMElement('option', data[i].name);
+      option.value = i;
+      selector.append(option);
+    }
+    return selector;
   }
 
   handleKeyPress(e) {

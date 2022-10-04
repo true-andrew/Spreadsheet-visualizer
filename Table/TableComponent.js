@@ -1,11 +1,12 @@
 import {createDOMElement} from "../helper.js";
-import {getData} from "../data.js";
+import {getData, documentsModel} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {SearchBar} from "../Controllers/SearchBar.js";
 import {TableDataModel} from "./TableDataModel.js";
 import {TextField} from "../Fields/TextField.js";
 import {UserField} from "../Fields/UserField.js";
 import {HeaderField} from "../Fields/HeaderField.js";
+import {Search} from "../Search/Search.js";
 
 export class TableComponent extends BaseComponent {
   datasets;
@@ -22,10 +23,33 @@ export class TableComponent extends BaseComponent {
   async init(data) {
     await getData().then(res => {
       this.datasets = res;
-      const firstData = Object.entries(this.datasets)[0];
-      this.dataModel = new TableDataModel(firstData[1], firstData[0]);
-      this.searchComponent = new SearchBar({tableComponent: this});
+      // const firstData = Object.entries(this.datasets)[0];
+      this.dataModel = new TableDataModel(documentsModel);
+      this.searchComponent = new Search({
+        searchCategories: [{
+          id: 0,
+          type: 'number',
+          name: 'ID',
+        },
+          {
+            type: 'text',
+            name: 'Document name',
+          },
+          {
+            type: 'object',
+            name: 'User',
+          },
+          {
+            type: 'number',
+            name: 'Size',
+          },
+          {
+            type: 'date',
+            name: 'Date',
+          }]
+      });
       this.searchComponent.init();
+      // this.
     });
   }
 
@@ -65,7 +89,7 @@ export class TableComponent extends BaseComponent {
   }
 
   sortData(colNumber) {
-    if(this.isCellEditing) {
+    if (this.isCellEditing) {
       return;
     }
     this.dataModel.setFilter('sort', {colNumber});

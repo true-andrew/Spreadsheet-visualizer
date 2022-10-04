@@ -2,7 +2,7 @@ import {BaseComponent} from "../BaseComponent.js";
 import {createDOMElement} from "../helper.js";
 
 export class HeaderField extends BaseComponent {
-    handleEvent(e) {
+  handleEvent(e) {
     if (e.type === 'click') {
       this.tableComponent.sortData(this.field.idCol);
     }

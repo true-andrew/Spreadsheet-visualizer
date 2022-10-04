@@ -2,7 +2,7 @@ import {TableComponent} from "./Table/TableComponent.js";
 import {DatePicker} from "./Datepicker/DatePicker.js";
 import {DatePickerRange} from "./Datepicker/DatePickerRange.js";
 import {Search} from "./Search/Search.js";
-import {UserCard} from "./UserCard.js";
+import {UserCard} from "./UserCard/UserCard.js";
 
 const container = document.getElementById('table_component');
 const table = new TableComponent({});

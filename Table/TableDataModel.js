@@ -1,11 +1,10 @@
 import {dateToNumber, insertSort} from "../helper.js";
 
 export class TableDataModel {
-  constructor(data, name) {
-    this.name = name;
-    this.data = Array.from(data);
-    this.initialData = data;
-    this.init();
+  constructor(model) {
+    this.name = model.name;
+    this.data = Array.from(model.data);
+    this.initialData = model.data;
   }
 
   data;
@@ -14,18 +13,18 @@ export class TableDataModel {
   dateRange = false;
   // appliedFilters = [];
 
-  init() {
-    for (let i = 0, len = this.data.length; i < len; i++) {
-      const row = this.data[i];
-      for (let j = 0, len = row.length; j < len; j++) {
-        const elem = row[j];
-        if (elem.type === 'date') {
-          this.dateRange = true;
-          break;
-        }
-      }
-    }
-  }
+  // init() {
+  //   for (let i = 0, len = this.data.length; i < len; i++) {
+  //     const row = this.data[i];
+  //     for (let j = 0, len = row.length; j < len; j++) {
+  //       const elem = row[j];
+  //       if (elem.type === 'date') {
+  //         this.dateRange = true;
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
   setFilter(filter, data) {
     if (filter === 'sort') {

@@ -1,3 +1,44 @@
+const data = [
+  [1, 'Operations', {value: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022'],
+  [2, 'Taxes', {value: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021'],
+  [3, 'Example', {value: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022'],
+]
+
+export const documentsModel = {
+  name: 'Documents',
+  columns: [
+    {
+      id: 0,
+      type: 'number',
+      name: 'ID',
+    },
+    {
+      id: 1,
+      type: 'text',
+      name: 'Document name',
+    },
+    {
+      id: 2,
+      type: 'object',
+      name: 'User',
+    },
+    {
+      id: 3,
+      type: 'number',
+      name: 'Size',
+    },
+    {
+      id: 4,
+      type: 'date',
+      name: 'Date',
+    }
+  ],
+  data: data,
+  // filters: ['search', 'dateRange'],
+};
+
+const documents = [];
+
 const documentsArr = [
   [
     {

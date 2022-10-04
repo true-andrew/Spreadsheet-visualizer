@@ -15,7 +15,6 @@ export class DatePickerTextField extends DatePicker {
 
   hide() {
     super.hide();
-    // this.domComponent.classList.remove('date-picker');
     this.domComponent.dispatchEvent(new CustomEvent('endEdit', {detail: this.inputElement.value}));
   }
 
