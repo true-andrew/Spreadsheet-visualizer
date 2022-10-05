@@ -1,56 +1,42 @@
 import {createDOMElement} from "../helper.js";
-import {getData, documentsModel} from "../data.js";
+import {documentsModel} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
-import {SearchBar} from "../Controllers/SearchBar.js";
 import {TableDataModel} from "./TableDataModel.js";
 import {TextField} from "../Fields/TextField.js";
 import {UserField} from "../Fields/UserField.js";
 import {HeaderField} from "../Fields/HeaderField.js";
 import {Search} from "../Search/Search.js";
+import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
 
 export class TableComponent extends BaseComponent {
   datasets;
   isCellEditing = false;
+  searchComponent;
+  dateRangeComponent;
 
   handleEvent(e) {
     if (e.type === 'click') {
-      this.changeDataSource(e.target.name);
+      const action = e.target.dataset.action;
+      if (this[action] !== undefined) {
+        this[action](e)
+      } else {
+        throw new Error(`Unknown action ${action}`);
+      }
+      // this.changeDataSource(e.target.name);
     } else {
       return new Error(`Unhandled event: ${e.type}`);
     }
   }
 
-  async init(data) {
-    await getData().then(res => {
-      this.datasets = res;
-      // const firstData = Object.entries(this.datasets)[0];
-      this.dataModel = new TableDataModel(documentsModel);
-      this.searchComponent = new Search({
-        searchCategories: [{
-          id: 0,
-          type: 'number',
-          name: 'ID',
-        },
-          {
-            type: 'text',
-            name: 'Document name',
-          },
-          {
-            type: 'object',
-            name: 'User',
-          },
-          {
-            type: 'number',
-            name: 'Size',
-          },
-          {
-            type: 'date',
-            name: 'Date',
-          }]
-      });
-      this.searchComponent.init();
-      // this.
-    });
+  init(data) {
+    this.dataModel = new TableDataModel(documentsModel);
+    this.dataModel.init();
+    this.searchComponent = new Search({searchCategories: this.dataModel.columns, tableComponent: this});
+    this.searchComponent.init();
+    if (this.dataModel.dateRange) {
+      this.dateRangeComponent = new DatePickerRange({});
+      this.dateRangeComponent.init();
+    }
   }
 
   renderComponent() {
@@ -62,25 +48,44 @@ export class TableComponent extends BaseComponent {
     this.searchComponent.mountPoint = this.domComponent;
     this.searchComponent.mountComponent();
 
+    if (this.dateRangeComponent) {
+      this.dateRangeComponent.renderComponent();
+      this.dateRangeComponent.mountPoint = this.domComponent;
+      this.dateRangeComponent.mountComponent();
+    }
+
     //table
     this.tableContainer = createDOMElement('div', undefined, 'table_container')
     this.tableElement = createDOMElement('table', undefined, 'table');
+    this.tableHeader = createDOMElement('thead');
+    this.tableBody = createDOMElement('tbody');
+
+    for (let i = 0, len = this.dataModel.columns.length; i < len; i++) {
+      const th = createDOMElement('th', this.dataModel.columns[i].name, 'table-header', {
+        action: 'sortData',
+        colNumber: i,
+      });
+      th.addEventListener('click', this);
+      this.tableHeader.append(th);
+    }
+
+    this.renderTableBody();
+    this.tableElement.append(this.tableHeader, this.tableBody);
     this.tableContainer.append(this.tableElement);
-    this.renderData();
 
     //dataSelector
-    const dataSources = createDOMElement('div');
-    const datasetNames = Object.keys(this.datasets);
-    for (let i = 0, len = datasetNames.length; i < len; i++) {
-      const name = datasetNames[i];
-      const selectBtn = createDOMElement('button', name);
-      selectBtn.name = name;
-      selectBtn.addEventListener('click', this);
-      dataSources.append(selectBtn);
-    }
-    this.dataSourcesContainer = dataSources;
+    // const dataSources = createDOMElement('div');
+    // const datasetNames = Object.keys(this.datasets);
+    // for (let i = 0, len = datasetNames.length; i < len; i++) {
+    //   const name = datasetNames[i];
+    //   const selectBtn = createDOMElement('button', name);
+    //   selectBtn.name = name;
+    //   selectBtn.addEventListener('click', this);
+    //   dataSources.append(selectBtn);
+    // }
+    // this.dataSourcesContainer = dataSources;
 
-    this.domComponent.replaceChildren(this.searchComponent.domComponent, this.tableContainer, this.dataSourcesContainer);
+    this.domComponent.append(this.tableContainer);
   }
 
   mountComponent() {
@@ -88,12 +93,13 @@ export class TableComponent extends BaseComponent {
     super.mountComponent();
   }
 
-  sortData(colNumber) {
+  sortData(e) {
     if (this.isCellEditing) {
       return;
     }
+    const colNumber = Number(e.target.dataset.colNumber);
     this.dataModel.setFilter('sort', {colNumber});
-    this.renderData();
+    this.renderTableBody();
   }
 
   searchData(data) {
@@ -101,7 +107,7 @@ export class TableComponent extends BaseComponent {
       return;
     }
     this.dataModel.setFilter('search', data);
-    this.renderData();
+    this.renderTableBody();
   }
 
   searchDateRange(data) {
@@ -114,23 +120,17 @@ export class TableComponent extends BaseComponent {
     this.dataModel.saveChanges(data);
   }
 
-  renderData() {
+  renderTableBody() {
     console.log('render data');
+    this.tableBody.textContent = '';
     const data = this.dataModel.getValues();
-    this.tableElement.textContent = '';
-
     for (let i = 0, len = data.length; i < len; i++) {
-      const row = createDOMElement('tr');
-      const fields = data[i];
-
-      for (let j = 0, len = fields.length; j < len; j++) {
-        const field = createField(fields[j], this);
-        field.init();
-        field.mountPoint = row;
-        field.renderComponent();
-        field.mountComponent();
+      const tr = createDOMElement('tr');
+      for (let j = 0, len = data[i].length; j < len; j++) {
+        const td = createDOMElement('td', data[i][j]);
+        tr.append(td);
       }
-      this.tableElement.append(row);
+      this.tableBody.append(tr);
     }
   }
 
@@ -154,6 +154,6 @@ const fields = {
   'header': HeaderField,
 };
 
-function createField(field, tableComponent) {
-  return new fields[field.type]({field, tableComponent});
+function createField(type, value, tableComponent) {
+  return new fields[type]({value, tableComponent});
 }

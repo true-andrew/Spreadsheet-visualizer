@@ -47,14 +47,19 @@
 }
 
 .table_container {
-    /*width: 750px;*/
-    height: 450px;
+    height: 300px;
     overflow-y: scroll;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
+}
+
+.table-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
 }
 
 .table td {

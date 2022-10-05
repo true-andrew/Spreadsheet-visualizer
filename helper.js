@@ -27,8 +27,8 @@ function compare(first, second) {
     a = dateToNumber(first.value);
     b = dateToNumber(second.value);
   } else {
-    a = first.value;
-    b = second.value;
+    a = first;
+    b = second;
   }
   if (a === b) {
     return 0;
@@ -42,10 +42,10 @@ export function dateToNumber(date) {
 
 export function insertSort(arr, order, colNumber) {
   let temp;
-  for (let i = 2, len = arr.length; i < len; i++) {
+  for (let i = 1, len = arr.length; i < len; i++) {
     let j = i;
     temp = arr[i];
-    while (j > 1 && compare(arr[j - 1][colNumber], temp[colNumber]) === order) {
+    while (j > 0 && compare(arr[j - 1][colNumber], temp[colNumber]) === order) {
       arr[j] = arr[j - 1];
       j--;
     }

@@ -1,30 +1,27 @@
 import {dateToNumber, insertSort} from "../helper.js";
 
 export class TableDataModel {
-  constructor(model) {
-    this.name = model.name;
-    this.data = Array.from(model.data);
-    this.initialData = model.data;
+  constructor(datamodel) {
+    this.columns = datamodel.columns;
+    this.initialData = datamodel.data;
+    this.data = Array.from(datamodel.data);
+    this.name = datamodel.name;
   }
 
   data;
   initialData;
   sortOrder = false;
   dateRange = false;
+
   // appliedFilters = [];
 
-  // init() {
-  //   for (let i = 0, len = this.data.length; i < len; i++) {
-  //     const row = this.data[i];
-  //     for (let j = 0, len = row.length; j < len; j++) {
-  //       const elem = row[j];
-  //       if (elem.type === 'date') {
-  //         this.dateRange = true;
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
+  init() {
+    for (let i = 0, len = this.columns.length; i < len; i++) {
+      if (this.columns[i].type === 'date') {
+        this.dateRange = true;
+      }
+    }
+  }
 
   setFilter(filter, data) {
     if (filter === 'sort') {
@@ -42,8 +39,8 @@ export class TableDataModel {
   }
 
   sort(data) {
-    const colNumber = data.colNumber;
     console.log('sort data');
+    const colNumber = data.colNumber;
     this.sortOrder = !this.sortOrder;
     insertSort(this.data, this.sortOrder, colNumber);
   }
@@ -66,20 +63,19 @@ export class TableDataModel {
     this.data = this.filterElems(this.compareDateRange, data);
   }
 
-  search(data) {
+  search(searchData) {
     console.log('search in data');
-    if (data.searchValue === '') {
+    if (searchData.searchValue === '') {
       this.data = Array.from(this.initialData);
       return;
     }
-    this.data = this.filterElems(this.compareValue, data);
+    this.data = this.filterElems(this.compareValue, searchData);
   }
 
   filterElems(compareFn, searchVal) {
     const filtered = [];
-    filtered.push(this.data[0]);
 
-    for (let i = 1, len = this.data.length; i < len; i++) {
+    for (let i = 0, len = this.data.length; i < len; i++) {
       const row = this.data[i];
       for (let j = 0, len = row.length; j < len; j++) {
         const elem = row[j];
@@ -102,7 +98,7 @@ export class TableDataModel {
   }
 
   compareValue(elem, data) {
-    const compared = String(elem.value).toLowerCase().includes(data.searchValue.toLowerCase())
+    const compared = String(elem).toLowerCase().includes(data.searchValue.toLowerCase())
     if (data.colNumber !== null) {
       return data.colNumber === elem.idCol && compared;
     } else {

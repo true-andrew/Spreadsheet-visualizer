@@ -62,8 +62,9 @@ export class Search extends BaseComponent {
       return;
     }
     this.searchInputValue = this.inputElement.value;
-    this.domComponent.dispatchEvent(new CustomEvent('search', {
-      detail: this.searchInputValue,
-    }));
+    this.tableComponent.searchData(this.searchInputValue);
+    // this.domComponent.dispatchEvent(new CustomEvent('search', {
+    //   detail: this.searchInputValue,
+    // }));
   }
 }
