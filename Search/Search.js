@@ -3,6 +3,7 @@ import {createDOMElement} from "../helper.js";
 
 export class Search extends BaseComponent {
   searchInputValue = '';
+  selector;
 
   handleEvent(e) {
     if (e.type === 'keypress') {
@@ -27,28 +28,27 @@ export class Search extends BaseComponent {
 
     searchContainer.append(inputElement, searchBtn);
 
-    //
-    if (this.searchCategories) {
-      searchContainer.append(this.createSelector());
-    }
-
     this.domComponent = searchContainer;
   }
 
-  createSelector() {
-    const selector = createDOMElement('select');
+  createSelector(data) {
+    if(this.selector !== undefined) {
+      this.selector.remove();
+    }
 
+    const selector = createDOMElement('select');
+    this.selector = selector;
     const initSelectValue = createDOMElement('option', 'All columns');
     initSelectValue.value = null;
     selector.append(initSelectValue);
 
-    const data = this.searchCategories;
     for (let i = 0, len = data.length; i < len; i++) {
       const option = createDOMElement('option', data[i].name);
       option.value = i;
       selector.append(option);
     }
-    return selector;
+
+    this.domComponent.append(selector);
   }
 
   handleKeyPress(e) {
@@ -62,7 +62,10 @@ export class Search extends BaseComponent {
       return;
     }
     this.searchInputValue = this.inputElement.value;
-    this.tableComponent.searchData(this.searchInputValue);
+    this.tableComponent.searchData({
+      searchValue: this.searchInputValue,
+      colNumber: JSON.parse(this.selector.value),
+    });
     // this.domComponent.dispatchEvent(new CustomEvent('search', {
     //   detail: this.searchInputValue,
     // }));

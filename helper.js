@@ -20,15 +20,18 @@ export function createDOMElement(type, textContent, className, dataset) {
   return element;
 }
 
-function compare(first, second) {
+function compare(first, second, type) {
   let a;
   let b;
-  if (first.type === 'date') {
+  if (type === 'date') {
     a = dateToNumber(first.value);
     b = dateToNumber(second.value);
+  } else if (type === 'user') {
+    a = first.value.name;
+    b = second.value.name;
   } else {
-    a = first;
-    b = second;
+    a = first.value;
+    b = second.value;
   }
   if (a === b) {
     return 0;
@@ -40,12 +43,12 @@ export function dateToNumber(date) {
   return Date.parse(date.split('.').reverse().join('-'));
 }
 
-export function insertSort(arr, order, colNumber) {
+export function insertSort(arr, order, colNumber, colType) {
   let temp;
   for (let i = 1, len = arr.length; i < len; i++) {
     let j = i;
     temp = arr[i];
-    while (j > 0 && compare(arr[j - 1][colNumber], temp[colNumber]) === order) {
+    while (j > 0 && compare(arr[j - 1][colNumber], temp[colNumber], colType) === order) {
       arr[j] = arr[j - 1];
       j--;
     }

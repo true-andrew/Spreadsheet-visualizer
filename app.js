@@ -1,6 +1,5 @@
 import {TableComponent} from "./Table/TableComponent.js";
 import {DatePicker} from "./Datepicker/DatePicker.js";
-import {DatePickerRange} from "./Datepicker/DatePickerRange.js";
 import {Search} from "./Search/Search.js";
 import {UserCard} from "./UserCard/UserCard.js";
 
@@ -9,7 +8,10 @@ const table = new TableComponent({});
 table.init();
 table.mountPoint = container;
 table.renderComponent();
-table.mountComponent();
+setTimeout(() => {
+  table.mountComponent();
+}, 1500)
+
 
 //Test Components
 // const range = new DatePickerRange({});

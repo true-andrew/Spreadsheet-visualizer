@@ -1,4 +1,5 @@
 import {BaseComponent} from "../BaseComponent.js";
+import {createDOMElement} from "../helper.js";
 
 const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 const WEEK_DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -16,6 +17,8 @@ export class DatePicker extends BaseComponent {
   //data
   displayedDate;
   selectedDate;
+  startDate;
+  endDate;
   viewMode;
   //regexp
   regExDelete = /delete/;
@@ -35,8 +38,13 @@ export class DatePicker extends BaseComponent {
     this.displayedDate =  new Date();
   }
 
+  setInitDate(initDate) {
+    const date = initDate.split('.').reverse().join('-');
+    this.setDate(date);
+  }
+
   renderComponent() {
-    this.domComponent = createEl('div', 'date-picker date-picker-hidden');
+    this.domComponent = createEl('div', 'date-picker');
     this.inputElement = createEl('input', 'selected-date', undefined, {
       type: 'text',
       placeholder: 'DD.MM.YYYY',
@@ -72,6 +80,20 @@ export class DatePicker extends BaseComponent {
     this.domComponent.append(this.inputElement, this.calendar);
     this.viewMode = 'days';
     this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
+
+    if (this.initDate) {
+      this.setInitDate(this.initDate);
+    }
+
+    if (this.dateRange) {
+      this.inputElement.placeholder = 'DD.MM.YYYY - DD.MM.YYYY';
+      this.domComponent.classList.add('date-picker-range');
+      const resetBtn = createDOMElement('button', 'Reset', 'reset-button', {
+        action: 'resetRange',
+      });
+      resetBtn.addEventListener('click', this);
+      this.inputElement.after(resetBtn);
+    }
   }
 
   initEvents() {
@@ -102,18 +124,44 @@ export class DatePicker extends BaseComponent {
     }
   }
 
+  resetRange() {
+    if (this.inputElement.value.length) {
+      this.tableComponent.searchDateRange(null);
+      // this.domComponent.dispatchEvent(new CustomEvent('selectRange'));
+    }
+    this.inputElement.value = '';
+    this.hide();
+  }
+
   show() {
-    this.domComponent.classList.replace('date-picker-hidden', 'date-picker-active');
     this.calendar.style.display = 'block';
+    this.inputElement.focus();
   }
 
   hide() {
-    this.domComponent.classList.replace('date-picker-active', 'date-picker-hidden');
     this.calendar.style.display = 'none';
+
+    if (this.dateRange) {
+      this.inputElement.blur();
+      this.startDate = undefined;
+      this.endDate = undefined;
+      this.selectedDate = undefined;
+      this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
+    }
   }
 
   setInputFieldValue(date) {
-    this.inputElement.value = formatDate(date);
+    if (this.dateRange) {
+      if (this.startDate === undefined && date !== undefined) {
+        this.inputElement.value = formatDate(date);
+      } else if (this.endDate === undefined && date !== undefined) {
+        this.inputElement.value = formatDate(this.startDate) + '   -   ' + formatDate(date);
+      } else {
+        this.inputElement.value = '';
+      }
+    } else {
+      this.inputElement.value = formatDate(date);
+    }
   }
 
   setDate(date) {
@@ -125,6 +173,39 @@ export class DatePicker extends BaseComponent {
     this.renderDays(this.selectedDate.getFullYear(), this.selectedDate.getMonth());
   }
 
+  setStartDate() {
+    this.startDate = this.selectedDate;
+  }
+
+  setEndDate() {
+    this.endDate = this.selectedDate;
+
+    if (this.endDate < this.startDate) {
+      const tmp = this.endDate;
+      this.endDate = this.startDate;
+      this.startDate = tmp;
+      this.reverseRange();
+    }
+
+    this.tableComponent.searchDateRange({
+      start: this.startDate.valueOf(),
+      end: this.endDate.valueOf(),
+    })
+    // this.domComponent.dispatchEvent(new CustomEvent('selectRange', {
+    //     detail: {
+    //       start: this.startDate.valueOf(),
+    //       end: this.endDate.valueOf(),
+    //     }
+    //   }
+    // ));
+
+    this.hide();
+  }
+
+  reverseRange() {
+    this.inputElement.value = this.inputElement.value.split('   -   ').reverse().join('   -   ');
+  }
+
   parseDateFromElement(el) {
     const {year, month, day} = el.dataset;
     return new Date(year, month, day);
@@ -132,6 +213,14 @@ export class DatePicker extends BaseComponent {
 
   pickDate(el) {
     this.setDate(this.parseDateFromElement(el));
+
+    if (this.dateRange) {
+      if (this.startDate === undefined) {
+        this.setStartDate();
+      } else {
+        this.setEndDate();
+      }
+    }
   }
 
   navigateCalendar(el) {
@@ -341,6 +430,10 @@ export class DatePicker extends BaseComponent {
   }
 
   handleEvent_input(ev) {
+    if (this.dateRange) {
+      ev.target.value = '';
+      return;
+    }
     if (this.regExDelete.test(ev.inputType)) {
       return;
     }

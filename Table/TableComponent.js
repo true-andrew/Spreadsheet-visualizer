@@ -1,109 +1,65 @@
 import {createDOMElement} from "../helper.js";
-import {documentsModel} from "../data.js";
+import {documentsModel, dataSets, TABLE_DATA_TYPES, getData} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {TableDataModel} from "./TableDataModel.js";
-import {TextField} from "../Fields/TextField.js";
-import {UserField} from "../Fields/UserField.js";
-import {HeaderField} from "../Fields/HeaderField.js";
 import {Search} from "../Search/Search.js";
-import {DatePickerRange} from "../Datepicker/DatePickerRange.js";
+import {DatePicker} from "../Datepicker/DatePicker.js";
 
 export class TableComponent extends BaseComponent {
-  datasets;
-  isCellEditing = false;
+  editingCell = null;
   searchComponent;
   dateRangeComponent;
+  tableBody;
+  tableContainer;
+  columnTypesSet = {};
 
   handleEvent(e) {
     if (e.type === 'click') {
-      const action = e.target.dataset.action;
-      if (this[action] !== undefined) {
-        this[action](e)
-      } else {
-        throw new Error(`Unknown action ${action}`);
-      }
-      // this.changeDataSource(e.target.name);
+      this.changeDataSource(e.target.dataset.dataName);
     } else {
-      return new Error(`Unhandled event: ${e.type}`);
+      throw new Error(`Unhandled event: ${e.type}`);
     }
   }
 
-  init(data) {
-    this.dataModel = new TableDataModel(documentsModel);
+  init() {
+    this.dataModel = new TableDataModel();
     this.dataModel.init();
-    this.searchComponent = new Search({searchCategories: this.dataModel.columns, tableComponent: this});
+
+    this.searchComponent = new Search({tableComponent: this});
     this.searchComponent.init();
-    if (this.dataModel.dateRange) {
-      this.dateRangeComponent = new DatePickerRange({});
-      this.dateRangeComponent.init();
-    }
+
+    this.dateRangeComponent = new DatePicker({dateRange: true, tableComponent: this});
+    this.dateRangeComponent.init();
   }
 
   renderComponent() {
-    //container
-    this.domComponent = createDOMElement('div');
+    this.domComponent = createDOMElement('div', undefined, 'table-component');
 
-    //controllers
-    this.searchComponent.renderComponent();
     this.searchComponent.mountPoint = this.domComponent;
-    this.searchComponent.mountComponent();
+    this.searchComponent.renderComponent();
 
-    if (this.dateRangeComponent) {
-      this.dateRangeComponent.renderComponent();
-      this.dateRangeComponent.mountPoint = this.domComponent;
-      this.dateRangeComponent.mountComponent();
-    }
+    this.dateRangeComponent.mountPoint = this.domComponent;
+    this.dateRangeComponent.renderComponent();
 
-    //table
-    this.tableContainer = createDOMElement('div', undefined, 'table_container')
-    this.tableElement = createDOMElement('table', undefined, 'table');
-    this.tableHeader = createDOMElement('thead');
-    this.tableBody = createDOMElement('tbody');
-
-    for (let i = 0, len = this.dataModel.columns.length; i < len; i++) {
-      const th = createDOMElement('th', this.dataModel.columns[i].name, 'table-header', {
-        action: 'sortData',
-        colNumber: i,
-      });
-      th.addEventListener('click', this);
-      this.tableHeader.append(th);
-    }
-
-    this.renderTableBody();
-    this.tableElement.append(this.tableHeader, this.tableBody);
-    this.tableContainer.append(this.tableElement);
-
-    //dataSelector
-    // const dataSources = createDOMElement('div');
-    // const datasetNames = Object.keys(this.datasets);
-    // for (let i = 0, len = datasetNames.length; i < len; i++) {
-    //   const name = datasetNames[i];
-    //   const selectBtn = createDOMElement('button', name);
-    //   selectBtn.name = name;
-    //   selectBtn.addEventListener('click', this);
-    //   dataSources.append(selectBtn);
-    // }
-    // this.dataSourcesContainer = dataSources;
-
-    this.domComponent.append(this.tableContainer);
+    const welcomeContainer = createDOMElement('h3', 'Choose a source of data');
+    this.domComponent.append(welcomeContainer, this.createBtnGroup());
   }
 
   mountComponent() {
-    this.mountPoint.classList.replace('loader', 'table_component');
+    this.mountPoint.classList.remove('loader');
     super.mountComponent();
   }
 
-  sortData(e) {
-    if (this.isCellEditing) {
+  sortData(colNumber, colType) {
+    if (this.editingCell !== null) {
       return;
     }
-    const colNumber = Number(e.target.dataset.colNumber);
-    this.dataModel.setFilter('sort', {colNumber});
+    this.dataModel.setFilter('sort', {colNumber, colType});
     this.renderTableBody();
   }
 
   searchData(data) {
-    if (this.isCellEditing) {
+    if (this.editingCell !== null) {
       return;
     }
     this.dataModel.setFilter('search', data);
@@ -112,48 +68,349 @@ export class TableComponent extends BaseComponent {
 
   searchDateRange(data) {
     this.dataModel.setFilter('searchDateRange', data);
-    this.renderData();
+    this.renderTableBody();
   }
 
-  saveChanges(data) {
-    this.isCellEditing = false;
-    this.dataModel.saveChanges(data);
-  }
-
-  renderTableBody() {
-    console.log('render data');
-    this.tableBody.textContent = '';
-    const data = this.dataModel.getValues();
-    for (let i = 0, len = data.length; i < len; i++) {
-      const tr = createDOMElement('tr');
-      for (let j = 0, len = data[i].length; j < len; j++) {
-        const td = createDOMElement('td', data[i][j]);
-        tr.append(td);
-      }
-      this.tableBody.append(tr);
-    }
+  saveChanges(newValue) {
+    this.editingCell.classList.remove('table-cell_editing');
+    this.editingCell.textContent = newValue;
+    this.dataModel.saveChanges({
+      idRow: Number(this.editingCell.dataset.idRow),
+      idCol: Number(this.editingCell.dataset.idCol),
+      newValue,
+    });
+    this.editingCell = null;
   }
 
   changeDataSource(dataName) {
     if (this.dataModel.name === dataName) {
       return;
     }
-    this.dataModel = new TableDataModel(this.datasets[dataName], dataName);
-    this.domComponent.remove();
-    this.renderComponent();
-    this.mountComponent();
+    this.toggleTableLoading();
+    getData(dataName).then((res) => {
+      this.toggleTableLoading();
+      this.updateDataModel(res);
+    });
+  }
+
+  toggleTableLoading() {
+    this.domComponent.classList.toggle('table-component_changing');
+  }
+
+  updateDataModel(dataModel) {
+    this.dataModel.setDataModel(dataModel);
+    if (this.tableContainer === undefined) {
+      this.domComponent.textContent = '';
+      this.renderTableWithControllers();
+    } else {
+      this.searchComponent.createSelector(this.dataModel.columns);
+      this.dateRangeComponent.inputElement.textContent = '';
+      this.renderTableHeader();
+      this.renderTableBody();
+    }
+  }
+
+  createBtnGroup() {
+    const btnGroup = createDOMElement('div');
+    const datasetsNames = Object.keys(dataSets);
+    for (let i = 0, len = datasetsNames.length; i < len; i++) {
+      const button = createDOMElement('button', datasetsNames[i], 'button', {
+        dataName: datasetsNames[i],
+      });
+      button.addEventListener('click', this);
+      btnGroup.append(button);
+    }
+    return btnGroup;
+  }
+
+  renderTableWithControllers() {
+    this.tableContainer = createDOMElement('div', undefined, 'table-container');
+    const tableElement = createDOMElement('table', undefined, 'table');
+    this.tableHeader = createDOMElement('thead');
+    this.tableBody = createDOMElement('tbody');
+    this.renderTableHeader();
+    this.renderTableBody();
+    tableElement.append(this.tableHeader, this.tableBody);
+    this.tableContainer.append(tableElement);
+
+    this.searchComponent.createSelector(this.dataModel.columns);
+    this.searchComponent.mountComponent();
+    this.dateRangeComponent.mountComponent();
+    this.domComponent.append(this.tableContainer, this.createBtnGroup());
+  }
+
+  renderTableHeader() {
+    this.tableHeader.textContent = '';
+    for (let i = 0, len = this.dataModel.columns.length; i < len; i++) {
+      const elem = this.dataModel.columns[i];
+      if (this.columnTypesSet[elem.type] === undefined) {
+        const columnClass = getColumnClassByType(elem.type);
+        const columnType = new columnClass(this);
+        columnType.renderComponent();
+        columnType.mountComponent();
+        this.columnTypesSet[elem.type] = columnType;
+      }
+      this.tableHeader.append(this.columnTypesSet[elem.type].createHeader(elem.name, elem.type, i));
+    }
+  }
+
+  renderTableBody() {
+    console.log('render data');
+    this.tableBody.textContent = '';
+    const data = this.dataModel.getValues();
+    const documentFragment = document.createDocumentFragment();
+
+    for (let i = 0, len = data.length; i < len; i++) {
+      const tr = createDOMElement('tr');
+      for (let j = 0, len = data[i].length; j < len; j++) {
+        const elem = data[i][j];
+        const td = this.columnTypesSet[elem.type].createCell(elem);
+        tr.append(td);
+      }
+      documentFragment.append(tr);
+    }
+
+    this.tableBody.replaceChildren(documentFragment);
   }
 }
 
-const fields = {
-  'number': TextField,
-  'text': TextField,
-  'textarea': TextField,
-  'date': TextField,
-  'user': UserField,
-  'header': HeaderField,
-};
+/**/
 
-function createField(type, value, tableComponent) {
-  return new fields[type]({value, tableComponent});
+class Column {
+  constructor(tableComponent) {
+    this.tableComponent = tableComponent;
+  }
+
+  tableComponent;
+
+  handleEvent(e) {
+    if (e.type === 'click') {
+      this.tableComponent.sortData(e.target.dataset.colNumber, e.target.dataset.colType);
+    } else {
+      throw new Error(`Unhandled event: ${e.type}`);
+    }
+  }
+
+  createHeader(name, type, colNumber) {
+    const th = createDOMElement('th', name, 'table-header', {
+      action: 'sortData',
+      colNumber,
+      colType: type,
+    });
+    th.addEventListener('click', this);
+
+    return th;
+  }
+
+  createCell(value, idRow, idCol) {
+    return createDOMElement('td', value, 'table-cell', {idRow, idCol});
+  }
+
+  editCell() {
+  }
+
+  renderComponent() {
+  }
+
+  mountComponent() {
+  }
+}
+
+class PopUpColumn extends Column {
+  timeout;
+
+  handleEvent(e) {
+    if (e.type === 'mouseenter') {
+      this.setTimer(e);
+    } else if (e.type === 'mouseleave') {
+      this.hidePopUp(e);
+    } else {
+      super.handleEvent(e);
+    }
+  }
+
+  setTimer(e) {
+    this.timeout = setTimeout(this.showPopUp, 500, e, this.popup);
+  }
+
+  showPopUp(e) {
+  }
+
+  hidePopUp(e) {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+  }
+}
+
+class TextColumn extends Column {
+  handleEvent(e) {
+    if (e.type === 'dblclick') {
+      this.editCell(e.target);
+    } else if (e.type === 'blur') {
+      this.tableComponent.saveChanges(e.target.value);
+    } else if (e.type === 'keypress') {
+      if (e.key === 'Enter') {
+        e.target.blur();
+      }
+    } else {
+      super.handleEvent(e);
+    }
+  }
+
+  createCell(dataObj) {
+    const td = super.createCell(dataObj.value, dataObj.idRow, dataObj.idCol);
+    td.addEventListener('dblclick', this);
+    return td;
+  }
+
+  editCell(td) {
+    if (this.tableComponent.editingCell !== null) {
+      return;
+    }
+    this.tableComponent.editingCell = td;
+    td.classList.add('table-cell_editing');
+    const tdSizes = td.getBoundingClientRect();
+    const inputElement = createDOMElement('input', undefined, 'edit-cell__input');
+    inputElement.type = 'text';
+    inputElement.value = td.textContent;
+    inputElement.style.height = tdSizes.height + 'px';
+    inputElement.addEventListener('blur', this);
+    inputElement.addEventListener('keypress', this);
+    td.textContent = '';
+    td.append(inputElement);
+  }
+
+}
+
+class NumberColumn extends TextColumn {
+  createCell(dataObj) {
+    const td = super.createCell(dataObj);
+    td.style.textAlign = 'right';
+    return td;
+  }
+
+  editCell(td) {
+    super.editCell(td);
+    td.firstChild.type = 'number';
+  }
+}
+
+class DateColumn extends PopUpColumn {
+  handleEvent(e) {
+    if (e.type === 'dblclick') {
+      this.showPopUp(e);
+    } else if (e.type === 'blur') {
+      this.hidePopUp(e);
+    } else {
+      super.handleEvent(e);
+    }
+  }
+
+  renderComponent() {
+    this.datePicker = new DatePicker({});
+    this.datePicker.init();
+    this.datePicker.renderComponent();
+    this.datePicker.inputElement.addEventListener('blur', this);
+    this.datePicker.domComponent.style.display = 'none';
+    this.datePicker.domComponent.style.position = 'absolute';
+  }
+
+  mountComponent() {
+    this.datePicker.mountPoint = document.body;
+    this.datePicker.mountComponent();
+  }
+
+  createCell(dataObj) {
+    const td = super.createCell(dataObj.value, dataObj.idRow, dataObj.idCol);
+    td.addEventListener('dblclick', this);
+    return td;
+  }
+
+  showPopUp(e) {
+    this.tableComponent.editingCell = e.target;
+    this.tableComponent.tableContainer.style.overflowY = 'hidden';
+    const elemCoords = e.target.getBoundingClientRect();
+    this.datePicker.domComponent.style.top = elemCoords.top + document.documentElement.scrollTop + 'px';
+    this.datePicker.domComponent.style.left = elemCoords.left + 'px';
+    this.datePicker.domComponent.style.width = elemCoords.width + 'px';
+    this.datePicker.domComponent.style.height = elemCoords.height + 'px';
+    this.datePicker.domComponent.style.display = '';
+    this.datePicker.setInitDate(e.target.textContent);
+    this.datePicker.show();
+  }
+
+  hidePopUp(e) {
+    if (e.relatedTarget !== this.datePicker.calendar && e.relatedTarget !== this.datePicker.todayBtn) {
+      this.datePicker.domComponent.style.display = 'none';
+      this.tableComponent.tableContainer.style.overflowY = 'scroll';
+      this.tableComponent.saveChanges(e.target.value);
+    }
+  }
+}
+
+class UserColumn extends PopUpColumn {
+  timeout;
+
+  renderComponent() {
+    this.popup = createDOMElement('div', undefined, 'user-card');
+    this.popup.classList.add('table__user-card');
+    this.popup.addEventListener('mouseleave', this);
+  }
+
+  mountComponent() {
+    document.body.append(this.popup);
+  }
+
+  createCell(dataObj) {
+    const td = super.createCell(dataObj.value.name, dataObj.idRow, dataObj.idCol);
+    td.dataset.name = dataObj.value.name;
+    td.dataset.additional = JSON.stringify(dataObj.value.additional);
+    td.classList.add('user-field');
+    td.addEventListener('mouseenter', this);
+    td.addEventListener('mouseleave', this);
+    return td;
+  }
+
+  hidePopUp(e) {
+    super.hidePopUp(e);
+    if (e.relatedTarget === this.popup) {
+      return;
+    }
+    this.popup.style.display = 'none';
+    this.popup.textContent = '';
+  }
+
+  showPopUp(e, popup) {
+    const elemCoords = e.target.getBoundingClientRect();
+    popup.style.top = elemCoords.bottom + document.documentElement.scrollTop + 'px';
+    popup.style.left = elemCoords.left + 'px';
+    popup.style.display = 'flex';
+
+    const userName = e.target.dataset.name;
+    const userInfo = JSON.parse(e.target.dataset.additional);
+
+    const photo = createDOMElement('div', undefined, 'user-card__photo');
+    const name = createDOMElement('h3', userName);
+    const additionalInfo = Object.keys(userInfo);
+    popup.append(photo, name);
+
+    for (let i = 0, len = additionalInfo.length; i < len; i++) {
+      const propName = additionalInfo[i];
+      const p = createDOMElement('p', `${propName}: ${userInfo[propName]}`);
+      popup.append(p);
+    }
+  }
+}
+
+function getColumnClassByType(type) {
+  if (type === TABLE_DATA_TYPES.TEXT) {
+    return TextColumn;
+  } else if (type === TABLE_DATA_TYPES.NUMBER) {
+    return NumberColumn;
+  } else if (type === TABLE_DATA_TYPES.DATE) {
+    return DateColumn;
+  } else if (type === TABLE_DATA_TYPES.USER) {
+    return UserColumn;
+  }
 }

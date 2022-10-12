@@ -1,0 +1,184 @@
+@import "../Datepicker/datepicker.css";
+@import "../UserCard/userCard.css";
+@import "../loader.css";
+@import "../Search/search.css";
+
+:root {
+    font-family: Roboto Monospaced, sans-serif;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+}
+
+.table-component {
+    border: 1px solid #ddd;
+    padding: 25px;
+    border-radius: 25px;
+    color: #313131;
+    width: 750px;
+    height: 450px;
+    box-sizing: border-box;
+    filter: blur(0px);
+    transition: filter 1s;
+}
+
+.table-component_changing {
+    filter: blur(5px);
+}
+
+.table-component input,
+.table-component button,
+.table-component select,
+.table-component textarea {
+    font-size: 1.1rem;
+    color: #313131;
+    border: 1px solid #ddd;
+    outline: none;
+    box-sizing: border-box;
+    padding: 4px 8px;
+}
+
+.table-component input:hover,
+.table-component select:hover,
+.table-component textarea:hover {
+    background-color: #F3F3F3;
+}
+
+.table-component button {
+    background-color: #cfecff;
+}
+
+.table-component button:hover {
+    background-color: #93d4ff;
+}
+
+.table-component button:active {
+    background-color: #abe1ff;
+}
+
+.table-container {
+    /*position: relative;*/
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+.table-cell {
+    width: 10px;
+    text-align: center;
+}
+
+.table-cell, .table-header {
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.table th {
+    cursor: pointer;
+    user-select: none;
+}
+
+.table-cell_editing {
+    padding: 0;
+}
+
+.edit-cell__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 4px;
+    margin: 0;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    resize: vertical;
+}
+
+.editing-field {
+    /*width: inherit;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.editing-field div button {
+    margin: 5px;
+}
+
+.editing-field_input, .editing-field_textarea {
+    width: 100%;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table tr:hover {
+    background-color: #d0d0d0;
+}
+
+.controllers {
+    display: flex;
+    justify-content: space-between;
+}
+
+.controller {
+    width: 100%;
+    padding: 12px 0;
+    box-sizing: border-box;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+}
+
+.search-container > input {
+    flex-grow: 1;
+}
+
+.user-field .user-card {
+    display: none;
+}
+
+.user-field:hover .user-card {
+    display: flex;
+    position: absolute;
+}
+
+.table__user-card {
+    display: none;
+    position: absolute;
+}
+
+.popup {
+    position: relative;
+    border-radius: 0 12px 12px 12px;
+    width: 200px;
+    height: 100px;
+    background-color: #cbcbcb;
+    margin: 15px;
+}
+
+.popup:before {
+    position: absolute;
+    top: -10px;
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 17px;
+    border-color: transparent transparent transparent #cbcbcb;
+}

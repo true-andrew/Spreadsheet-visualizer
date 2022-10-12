@@ -1,8 +1,5 @@
-import {EventEmitter} from "./EventEmitter.js";
-
-export class BaseComponent extends EventEmitter {
+export class BaseComponent {
   constructor(options) {
-    super()
     this.registerOptions(options);
   }
 
