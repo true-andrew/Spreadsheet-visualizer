@@ -6,12 +6,14 @@ import {Search} from "../Search/Search.js";
 import {DatePicker} from "../Datepicker/DatePicker.js";
 
 export class TableComponent extends BaseComponent {
-  editingCell = null;
+  dataModel;
   searchComponent;
   dateRangeComponent;
+  tableHeader;
   tableBody;
   tableContainer;
   columnTypesSet = {};
+  editingCell = null;
 
   handleEvent(e) {
     if (e.type === 'click') {
