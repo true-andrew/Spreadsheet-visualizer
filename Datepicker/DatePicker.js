@@ -45,31 +45,31 @@ export class DatePicker extends BaseComponent {
 
   renderComponent() {
     this.domComponent = createEl('div', 'date-picker');
-    this.inputElement = createEl('input', 'selected-date', undefined, {
+    this.inputElement = createEl('input', 'date-picker__input', undefined, {
       type: 'text',
       placeholder: 'DD.MM.YYYY',
       maxLength: 11,
     });
 
-    this.calendar = createEl('div', 'calendar', undefined, {tabIndex: -1});
+    this.calendar = createEl('div', 'date-picker__calendar', undefined, {tabIndex: -1});
 
-    const monthHeader = createEl('div', 'month-header');
-    this.prevMonthElement = createEl('div', 'arrows prev', '<');
-    this.nextMonthElement = createEl('div', 'arrows next', '>');
-    this.monthElement = createEl('div', 'mth');
+    const monthHeader = createEl('div', 'date-picker__header');
+    this.prevMonthElement = createEl('div', 'date-picker__arrow', '<');
+    this.nextMonthElement = createEl('div', 'date-picker__arrow', '>');
+    this.monthElement = createEl('div', 'date-picker__heading');
 
     monthHeader.append(this.prevMonthElement, this.monthElement, this.nextMonthElement);
 
-    this.weekDays = createEl('div', 'weekDays');
+    this.weekDays = createEl('div', 'date-picker__day-names');
 
     for (let dayName of WEEK_DAY_NAMES) {
-      const el = createEl('div', '', dayName);
+      const el = createEl('div', 'date-picker__day-name', dayName);
       this.weekDays.append(el);
     }
 
-    this.daysElement = createEl('div', 'visible-area days');
+    this.daysElement = createEl('div', 'date-picker__visible-area date-picker__visible-area_mode-days');
 
-    this.todayBtn = createEl('button', 'btn today', 'Сегодня', undefined, {
+    this.todayBtn = createEl('button', 'date-picker__today-btn', 'Сегодня', undefined, {
       year: this.displayedDate.getFullYear(),
       month: this.displayedDate.getMonth(),
       day: this.displayedDate.getDate(),
@@ -81,14 +81,10 @@ export class DatePicker extends BaseComponent {
     this.viewMode = 'days';
     this.renderDays(this.displayedDate.getFullYear(), this.displayedDate.getMonth());
 
-    if (this.initDate) {
-      this.setInitDate(this.initDate);
-    }
-
     if (this.dateRange) {
       this.inputElement.placeholder = 'DD.MM.YYYY - DD.MM.YYYY';
       this.domComponent.classList.add('date-picker-range');
-      const resetBtn = createDOMElement('button', 'Reset', 'reset-button', {
+      const resetBtn = createDOMElement('button', 'Reset', 'button', {
         action: 'resetRange',
       });
       resetBtn.addEventListener('click', this);
@@ -249,15 +245,16 @@ export class DatePicker extends BaseComponent {
       if (el.dataset.year === date.getFullYear().toString()
         && el.dataset.month === date.getMonth().toString()
         && el.dataset.day === date.getDate().toString()) {
-        el.classList.add('selected');
-      } else if (el.classList.contains('selected')) {
-        el.classList.remove('selected');
+        el.classList.add('date-picker__cell_selected');
+      } else if (el.classList.contains('date-picker__cell_selected')) {
+        el.classList.remove('date-picker__cell_selected');
       }
     }
   }
 
   renderDays(year, month) {
-    this.daysElement.classList.replace('months', 'days');
+    this.daysElement.classList.replace('date-picker__visible-area_mode-months', 'date-picker__visible-area_mode-days');
+    this.todayBtn.style.display = '';
 
     const equalMonth = this.displayedDate.getMonth() === Number(month);
     const equalYear = this.displayedDate.getFullYear() === Number(year);
@@ -312,7 +309,7 @@ export class DatePicker extends BaseComponent {
 
     for (let i = curMonthFirstDayIndex - 1; i >= 1; i--) {
       const dayNum = lastDayMonthBefore - i + 1;
-      const dayElement = createEl('div', 'day prev', String(dayNum), undefined, {
+      const dayElement = createEl('div', 'date-picker__cell date-picker__cell_prev', String(dayNum), undefined, {
         year: prevMonth.getFullYear(),
         month: prevMonth.getMonth(),
         day: dayNum,
@@ -323,7 +320,7 @@ export class DatePicker extends BaseComponent {
 
     for (let i = 0; i < amountDays; i++) {
       const dayNum = i + 1;
-      const dayElement = createEl('div', 'day', String(dayNum), undefined, {
+      const dayElement = createEl('div', 'date-picker__cell', String(dayNum), undefined, {
         year: currentYear,
         month: currentMonth,
         day: dayNum,
@@ -331,14 +328,14 @@ export class DatePicker extends BaseComponent {
       });
 
       if (todayDay === (i + 1) && todayMonth === currentMonth && todayYear === currentYear) {
-        dayElement.classList.add('today');
+        dayElement.classList.add('date-picker__cell_today');
       }
 
       daysContainer.append(dayElement);
     }
 
     for (let i = curMonthEndDayIndex + 1; i <= 7; i++) {
-      const dayElement = createEl('div', 'day next', String(firstDayNextMonth), undefined, {
+      const dayElement = createEl('div', 'date-picker__cell date-picker__cell_next', String(firstDayNextMonth), undefined, {
         year: nextMonth.getFullYear(),
         month: nextMonth.getMonth(),
         day: firstDayNextMonth,
@@ -360,7 +357,8 @@ export class DatePicker extends BaseComponent {
     this.monthElement.textContent = year;
     const yearNum = parseInt(year);
     this.weekDays.style.display = 'none';
-    this.daysElement.classList.replace('days', 'months');
+    this.todayBtn.style.display = 'none';
+    this.daysElement.classList.replace('date-picker__visible-area_mode-days', 'date-picker__visible-area_mode-months');
 
     writeDataset(this.monthElement, {
       year: year,
@@ -380,7 +378,7 @@ export class DatePicker extends BaseComponent {
 
     for (let i = 0; i < 12; i++) {
       const monthName = MONTHS[i];
-      const monthEl = createEl('div', 'day', monthName, undefined, {
+      const monthEl = createEl('div', 'date-picker__cell', monthName, undefined, {
         year: year,
         month: i,
         mode: 'days',
@@ -411,7 +409,7 @@ export class DatePicker extends BaseComponent {
     for (let i = 0; i < 12; i++) {
       const yearIterator = year - 1 + i;
 
-      const yearEl = createEl('div', 'day', String(yearIterator), undefined, {
+      const yearEl = createEl('div', 'date-picker__cell', String(yearIterator), undefined, {
         year: yearIterator,
         mode: 'months',
         action: 'navigateCalendar'
