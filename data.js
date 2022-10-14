@@ -1,13 +1,13 @@
 const documents = [
-  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022', '12.05.2022'],
-  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021', '12.05.2022'],
-  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022', '12.05.2022'],
-  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022', '12.05.2022'],
-  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021', '12.01.2022'],
-  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022', '12.05.2022'],
-  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022', '12.05.2022'],
-  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021', '12.05.2022'],
-  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022', '12.05.2022'],
+  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022'],
+  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021'],
+  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022'],
+  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022'],
+  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021'],
+  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022'],
+  [1, 'Operations', {name: 'Andrew', additional: {tel: 79096754545}}, 432, '12.05.2022'],
+  [2, 'Taxes', {name: 'Julia', additional: {role: 'Developer', tel: 74956968585}}, 221, '03.01.2021'],
+  [3, 'Example', {name: 'Ivan', additional: {email: 'ivanivan@gmail.com'}}, 553, '08.06.2022'],
 ]
 export const TABLE_DATA_TYPES = {
   NUMBER: 'number',
@@ -20,32 +20,22 @@ export const documentsModel = {
   name: 'Documents',
   columns: [
     {
-      id: 0,
       type: 'number',
       name: 'ID',
     },
     {
-      id: 1,
       type: 'text',
       name: 'Document name',
     },
     {
-      id: 2,
       type: 'user',
       name: 'User',
     },
     {
-      id: 3,
       type: 'number',
       name: 'Size',
     },
     {
-      id: 4,
-      type: 'date',
-      name: 'Date',
-    },
-    {
-      id: 5,
       type: 'date',
       name: 'Date',
     }

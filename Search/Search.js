@@ -23,7 +23,7 @@ export class Search extends BaseComponent {
     inputElement.addEventListener('keypress', this);
     this.inputElement = inputElement;
 
-    const searchBtn = createDOMElement('button', 'Search', 'search__button');
+    const searchBtn = createDOMElement('button', 'Search', 'button');
     searchBtn.addEventListener('click', this);
 
     searchContainer.append(inputElement, searchBtn);
