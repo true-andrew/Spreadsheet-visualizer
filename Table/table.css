@@ -43,15 +43,15 @@
     background-color: #F3F3F3;
 }
 
-.table-component button {
+.button {
     background-color: #cfecff;
 }
 
-.table-component button:hover {
+.button:hover {
     background-color: #93d4ff;
 }
 
-.table-component button:active {
+.button:active {
     background-color: #abe1ff;
 }
 
@@ -66,15 +66,12 @@
     border-collapse: collapse;
 }
 
-.table-header {
-    position: sticky;
-    top: 0;
-    background-color: white;
+.table__row:nth-child(even) {
+    background-color: #f2f2f2;
 }
 
-.table-cell {
-    width: 10px;
-    text-align: center;
+.table__row:hover {
+    background-color: #d0d0d0;
 }
 
 .table-cell, .table-header {
@@ -83,16 +80,25 @@
     border: 1px solid #ddd;
 }
 
-.table th {
+.table-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    border-top: none;
     cursor: pointer;
     user-select: none;
+}
+
+.table-cell {
+    width: 10px;
+    text-align: center;
 }
 
 .table-cell_editing {
     padding: 0;
 }
 
-.edit-cell__input {
+.table-cell__input {
     width: 100%;
     box-sizing: border-box;
     padding: 0 4px;
@@ -103,82 +109,7 @@
     resize: vertical;
 }
 
-.editing-field {
-    /*width: inherit;*/
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-.editing-field div button {
-    margin: 5px;
-}
-
-.editing-field_input, .editing-field_textarea {
-    width: 100%;
-}
-
-.table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.table tr:hover {
-    background-color: #d0d0d0;
-}
-
-.controllers {
-    display: flex;
-    justify-content: space-between;
-}
-
-.controller {
-    width: 100%;
-    padding: 12px 0;
-    box-sizing: border-box;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.search-container {
-    display: flex;
-}
-
-.search-container > input {
-    flex-grow: 1;
-}
-
-.user-field .user-card {
-    display: none;
-}
-
-.user-field:hover .user-card {
-    display: flex;
-    position: absolute;
-}
-
 .table__user-card {
     display: none;
     position: absolute;
-}
-
-.popup {
-    position: relative;
-    border-radius: 0 12px 12px 12px;
-    width: 200px;
-    height: 100px;
-    background-color: #cbcbcb;
-    margin: 15px;
-}
-
-.popup:before {
-    position: absolute;
-    top: -10px;
-    content: "";
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 0 10px 17px;
-    border-color: transparent transparent transparent #cbcbcb;
 }
