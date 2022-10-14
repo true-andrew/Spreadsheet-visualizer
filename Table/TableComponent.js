@@ -1,5 +1,5 @@
 import {createDOMElement} from "../helper.js";
-import {documentsModel, dataSets, TABLE_DATA_TYPES, getData} from "../data.js";
+import {dataSets, TABLE_DATA_TYPES, getData} from "../data.js";
 import {BaseComponent} from "../BaseComponent.js";
 import {TableDataModel} from "./TableDataModel.js";
 import {Search} from "../Search/Search.js";
@@ -163,7 +163,7 @@ export class TableComponent extends BaseComponent {
     const documentFragment = document.createDocumentFragment();
 
     for (let i = 0, len = data.length; i < len; i++) {
-      const tr = createDOMElement('tr');
+      const tr = createDOMElement('tr', undefined, 'table__row');
       for (let j = 0, len = data[i].length; j < len; j++) {
         const elem = data[i][j];
         const td = this.columnTypesSet[elem.type].createCell(elem);
@@ -273,7 +273,7 @@ class TextColumn extends Column {
     this.tableComponent.editingCell = td;
     td.classList.add('table-cell_editing');
     const tdSizes = td.getBoundingClientRect();
-    const inputElement = createDOMElement('input', undefined, 'edit-cell__input');
+    const inputElement = createDOMElement('input', undefined, 'table-cell__input');
     inputElement.type = 'text';
     inputElement.value = td.textContent;
     inputElement.style.height = tdSizes.height + 'px';
@@ -303,7 +303,11 @@ class DateColumn extends PopUpColumn {
     if (e.type === 'dblclick') {
       this.showPopUp(e);
     } else if (e.type === 'blur') {
-      this.hidePopUp(e);
+      if (e.relatedTarget !== this.datePicker.calendar && e.relatedTarget !== this.datePicker.todayBtn) {
+        this.hidePopUp();
+      }
+    } else if (e.type === 'scroll') {
+      this.setNewDatePickerPosition(e);
     } else {
       super.handleEvent(e);
     }
@@ -329,10 +333,20 @@ class DateColumn extends PopUpColumn {
     return td;
   }
 
+  setNewDatePickerPosition(e) {
+    const currentCellPosition = this.tableComponent.editingCell.getBoundingClientRect();
+    const tablePosition = e.target.getBoundingClientRect();
+    if (tablePosition.top > currentCellPosition.top || tablePosition.bottom < currentCellPosition.top) {
+      this.datePicker.domComponent.style.display = 'none';
+      return;
+    }
+    this.datePicker.domComponent.style.top = currentCellPosition.top + document.documentElement.scrollTop + 'px';
+  }
+
   showPopUp(e) {
     this.tableComponent.editingCell = e.target;
-    this.tableComponent.tableContainer.style.overflowY = 'hidden';
     const elemCoords = e.target.getBoundingClientRect();
+    this.tableComponent.tableContainer.addEventListener('scroll', this);
     this.datePicker.domComponent.style.top = elemCoords.top + document.documentElement.scrollTop + 'px';
     this.datePicker.domComponent.style.left = elemCoords.left + 'px';
     this.datePicker.domComponent.style.width = elemCoords.width + 'px';
@@ -342,12 +356,10 @@ class DateColumn extends PopUpColumn {
     this.datePicker.show();
   }
 
-  hidePopUp(e) {
-    if (e.relatedTarget !== this.datePicker.calendar && e.relatedTarget !== this.datePicker.todayBtn) {
+  hidePopUp() {
       this.datePicker.domComponent.style.display = 'none';
-      this.tableComponent.tableContainer.style.overflowY = 'scroll';
-      this.tableComponent.saveChanges(e.target.value);
-    }
+      this.tableComponent.tableContainer.removeEventListener('scroll', this);
+      this.tableComponent.saveChanges(this.datePicker.inputElement.value);
   }
 }
 
