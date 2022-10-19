@@ -10,7 +10,6 @@ export class TableDataModel {
   //true = asc; false - desc;
   sortOrder = true;
 
-
   init() {
   }
 

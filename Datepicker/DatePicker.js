@@ -122,7 +122,7 @@ export class DatePicker extends BaseComponent {
 
   resetRange() {
     if (this.inputElement.value.length) {
-      this.tableComponent.searchDateRange(null);
+      this.tableComponent.setFilter('searchDateRange', null);
       // this.domComponent.dispatchEvent(new CustomEvent('selectRange'));
     }
     this.inputElement.value = '';
@@ -183,7 +183,7 @@ export class DatePicker extends BaseComponent {
       this.reverseRange();
     }
 
-    this.tableComponent.searchDateRange({
+    this.tableComponent.setFilter('searchDateRange',{
       start: this.startDate.valueOf(),
       end: this.endDate.valueOf(),
     })

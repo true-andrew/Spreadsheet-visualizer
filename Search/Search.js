@@ -62,7 +62,7 @@ export class Search extends BaseComponent {
       return;
     }
     this.searchInputValue = this.inputElement.value;
-    this.tableComponent.searchData({
+    this.tableComponent.setFilter('search', {
       searchValue: this.searchInputValue,
       colNumber: JSON.parse(this.selector.value),
     });

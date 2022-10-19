@@ -32,6 +32,14 @@ export class TableComponent extends BaseComponent {
 
     this.dateRangeComponent = new DatePicker({dateRange: true, tableComponent: this});
     this.dateRangeComponent.init();
+
+    this.dataName = 'Documents';
+  }
+
+  async loadData() {
+    this.toggleTableLoading();
+    this.dataModel.setDataModel(await getData(this.dataName));
+    this.toggleTableLoading();
   }
 
   renderComponent() {
@@ -39,93 +47,12 @@ export class TableComponent extends BaseComponent {
 
     this.searchComponent.mountPoint = this.domComponent;
     this.searchComponent.renderComponent();
+    this.searchComponent.createSelector(this.dataModel.columns);
+
 
     this.dateRangeComponent.mountPoint = this.domComponent;
     this.dateRangeComponent.renderComponent();
 
-    const welcomeContainer = createDOMElement('h3', 'Choose a source of data');
-    this.domComponent.append(welcomeContainer, this.createBtnGroup());
-  }
-
-  mountComponent() {
-    this.mountPoint.classList.remove('loader');
-    super.mountComponent();
-  }
-
-  sortData(colNumber, colType) {
-    if (this.editingCell !== null) {
-      return;
-    }
-    this.dataModel.setFilter('sort', {colNumber, colType});
-    this.renderTableBody();
-  }
-
-  searchData(data) {
-    if (this.editingCell !== null) {
-      return;
-    }
-    this.dataModel.setFilter('search', data);
-    this.renderTableBody();
-  }
-
-  searchDateRange(data) {
-    this.dataModel.setFilter('searchDateRange', data);
-    this.renderTableBody();
-  }
-
-  saveChanges(newValue) {
-    this.editingCell.classList.remove('table-cell_editing');
-    this.editingCell.textContent = newValue;
-    this.dataModel.saveChanges({
-      idRow: Number(this.editingCell.dataset.idRow),
-      idCol: Number(this.editingCell.dataset.idCol),
-      newValue,
-    });
-    this.editingCell = null;
-  }
-
-  changeDataSource(dataName) {
-    if (this.dataModel.name === dataName) {
-      return;
-    }
-    this.toggleTableLoading();
-    getData(dataName).then((res) => {
-      this.toggleTableLoading();
-      this.updateDataModel(res);
-    });
-  }
-
-  toggleTableLoading() {
-    this.domComponent.classList.toggle('table-component_changing');
-  }
-
-  updateDataModel(dataModel) {
-    this.dataModel.setDataModel(dataModel);
-    if (this.tableContainer === undefined) {
-      this.domComponent.textContent = '';
-      this.renderTableWithControllers();
-    } else {
-      this.searchComponent.createSelector(this.dataModel.columns);
-      this.dateRangeComponent.inputElement.textContent = '';
-      this.renderTableHeader();
-      this.renderTableBody();
-    }
-  }
-
-  createBtnGroup() {
-    const btnGroup = createDOMElement('div');
-    const datasetsNames = Object.keys(dataSets);
-    for (let i = 0, len = datasetsNames.length; i < len; i++) {
-      const button = createDOMElement('button', datasetsNames[i], 'button', {
-        dataName: datasetsNames[i],
-      });
-      button.addEventListener('click', this);
-      btnGroup.append(button);
-    }
-    return btnGroup;
-  }
-
-  renderTableWithControllers() {
     this.tableContainer = createDOMElement('div', undefined, 'table-container');
     const tableElement = createDOMElement('table', undefined, 'table');
     this.tableHeader = createDOMElement('thead');
@@ -134,11 +61,21 @@ export class TableComponent extends BaseComponent {
     this.renderTableBody();
     tableElement.append(this.tableHeader, this.tableBody);
     this.tableContainer.append(tableElement);
+  }
 
+  updateComponent() {
     this.searchComponent.createSelector(this.dataModel.columns);
+    this.dateRangeComponent.inputElement.textContent = '';
+    this.renderTableHeader();
+    this.renderTableBody();
+  }
+
+  mountComponent() {
+    this.mountPoint.classList.remove('loader');
     this.searchComponent.mountComponent();
     this.dateRangeComponent.mountComponent();
     this.domComponent.append(this.tableContainer, this.createBtnGroup());
+    super.mountComponent();
   }
 
   renderTableHeader() {
@@ -157,7 +94,6 @@ export class TableComponent extends BaseComponent {
   }
 
   renderTableBody() {
-    console.log('render data');
     this.tableBody.textContent = '';
     const data = this.dataModel.getValues();
     const documentFragment = document.createDocumentFragment();
@@ -174,9 +110,55 @@ export class TableComponent extends BaseComponent {
 
     this.tableBody.replaceChildren(documentFragment);
   }
-}
 
-/**/
+  setFilter(filter, data) {
+    if (this.editingCell !== null) {
+      return;
+    }
+    this.dataModel.setFilter(filter, data);
+    this.renderTableBody();
+  }
+
+  saveChanges(newValue) {
+    this.editingCell.classList.remove('table-cell_editing');
+    this.editingCell.textContent = newValue;
+    this.dataModel.saveChanges({
+      idRow: Number(this.editingCell.dataset.idRow),
+      idCol: Number(this.editingCell.dataset.idCol),
+      newValue,
+    });
+    this.editingCell = null;
+  }
+
+  async changeDataSource(dataName) {
+    if (this.dataModel.name === dataName) {
+      return;
+    }
+
+    this.dataName = dataName;
+    await this.loadData();
+    this.updateComponent();
+  }
+
+  toggleTableLoading() {
+    if (this.domComponent !== undefined) {
+      this.domComponent.classList.toggle('table-component_changing');
+    }
+  }
+
+  createBtnGroup() {
+    const btnGroup = createDOMElement('div');
+    const datasetsNames = Object.keys(dataSets);
+    for (let i = 0, len = datasetsNames.length; i < len; i++) {
+      const button = createDOMElement('button', datasetsNames[i], 'button', {
+        dataName: datasetsNames[i],
+      });
+      button.addEventListener('click', this);
+      btnGroup.append(button);
+    }
+    return btnGroup;
+  }
+}
 
 class Column {
   constructor(tableComponent) {
@@ -187,7 +169,11 @@ class Column {
 
   handleEvent(e) {
     if (e.type === 'click') {
-      this.tableComponent.sortData(e.target.dataset.colNumber, e.target.dataset.colType);
+      // this.tableComponent.sortData(e.target.dataset.colNumber, e.target.dataset.colType);
+      this.tableComponent.setFilter('sort', {
+        colNumber: e.target.dataset.colNumber,
+        colType: e.target.dataset.colType
+      });
     } else {
       throw new Error(`Unhandled event: ${e.type}`);
     }
@@ -357,9 +343,9 @@ class DateColumn extends PopUpColumn {
   }
 
   hidePopUp() {
-      this.datePicker.domComponent.style.display = 'none';
-      this.tableComponent.tableContainer.removeEventListener('scroll', this);
-      this.tableComponent.saveChanges(this.datePicker.inputElement.value);
+    this.datePicker.domComponent.style.display = 'none';
+    this.tableComponent.tableContainer.removeEventListener('scroll', this);
+    this.tableComponent.saveChanges(this.datePicker.inputElement.value);
   }
 }
 
